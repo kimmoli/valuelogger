@@ -11,6 +11,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #ifndef LOGGER_H
 #define LOGGER_H
 #include <QObject>
+#include <QtSql>
+
 
 class Logger : public QObject
 {
@@ -29,12 +31,27 @@ public:
 
     Q_INVOKABLE void readInitParams();
 
+    Q_INVOKABLE void addParameterEntry(QString parameterName, QString parameterDescription);
+    Q_INVOKABLE void testReadEntries(QString table);
+
+    void closeDatabase();
+    void createTables();
+
+    static const QString CREATE_TABLE;
+    static const QString INSERT_REPLACE;
+    static const QString PARAMETERS_TABLE;
+    static const QString CREATE_PARAMETERS_TABLE_QUERY;
+    static const QString CREATE_UPDATE_PARAMETER_QUERY;
+    static const QString DB_NAME;
+
 signals:
     void varChanged();
     void versionChanged();
 
 private:
     QString m_var;
+    QSqlDatabase* db;
+
 };
 
 

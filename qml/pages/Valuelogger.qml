@@ -55,9 +55,12 @@ Page
                         console.log("dialog accepted")
                         console.log(dialog.parameterName)
                         console.log(dialog.parameterDescription)
+
                         parameterList.append({"name": dialog.parameterName,
                                                  "description": dialog.parameterDescription,
                                                  "visualize": true })
+
+                        logger.addParameterEntry(dialog.parameterName, dialog.parameterDescription, parameterList.get(parameterList.count-1))
                     } )
 
                 }
@@ -137,6 +140,8 @@ Page
         Button
         {
             text: "Visualize"
+            enabled: parameterList.count > 0
+
             onClicked:
             {
                 console.log("there is " + parameterList.count + " items in list.")
@@ -154,6 +159,8 @@ Page
     Logger
     {
         id: logger
+
+        Component.onCompleted: logger.testReadEntries("parameters")
     }
 }
 

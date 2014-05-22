@@ -6,6 +6,8 @@ TARGET = valuelogger
 
 CONFIG += sailfishapp
 
+QT += sql
+
 DEFINES += "APPVERSION=\\\"$${SPECVERSION}\\\""
 
 message($${DEFINES})
