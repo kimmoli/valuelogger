@@ -24,5 +24,6 @@ OTHER_FILES += qml/valuelogger.qml \
     rpm/valuelogger.spec \
 	valuelogger.png \
     valuelogger.desktop \
-    qml/pages/NewParameter.qml
+    qml/pages/NewParameter.qml \
+    qml/pages/AddValue.qml
 

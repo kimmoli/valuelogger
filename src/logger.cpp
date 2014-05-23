@@ -15,12 +15,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <QtSql>
 
 const QString Logger::DB_NAME = "";
-
-const QString Logger::CREATE_TABLE ="CREATE TABLE ";
-const QString Logger::INSERT_REPLACE = "INSERT OR REPLACE INTO ";
-const QString Logger::PARAMETERS_TABLE = "parameters";
-const QString Logger::CREATE_PARAMETERS_TABLE_QUERY = Logger::CREATE_TABLE + Logger::PARAMETERS_TABLE + " (parameter TEXT PRIMARY KEY, description TEXT, datatable TEXT)";
-const QString Logger::CREATE_UPDATE_PARAMETER_QUERY = INSERT_REPLACE + PARAMETERS_TABLE +" (parameter,description,datatable) VALUES (?,?,?)";
+const QString Logger::CREATE_PARAMETERS_TABLE_QUERY = "CREATE TABLE parameters (parameter TEXT PRIMARY KEY, description TEXT, visualize INTEGER, datatable TEXT)";
+const QString Logger::CREATE_UPDATE_PARAMETER_QUERY = "INSERT OR REPLACE INTO parameters (parameter,description,visualize,datatable) VALUES (?,?,?,?)";
+const QString Logger::DELETE_PARAMETER = "DELETE FROM parameters WHERE parameter = ?";
+const QString Logger::READ_PARAMETERS_TABLE = "SELECT * FROM parameters ORDER BY parameter ASC";
 
 Logger::Logger(QObject *parent) :
     QObject(parent)
@@ -76,6 +74,7 @@ void Logger::readInitParams()
 void Logger::createTables()
 {
     QVector <QString> queries;
+
     queries.append(Logger::CREATE_PARAMETERS_TABLE_QUERY);
 
     for(int i=0;i<queries.size();i++)
@@ -84,30 +83,35 @@ void Logger::createTables()
     }
 }
 
-QVariantMap Logger::testReadEntries(QString table)
+QVariantList Logger::readParameters()
 {
-    QSqlQuery query = QSqlQuery("SELECT * FROM " + table + " ORDER BY parameter ASC", *db);
+    QSqlQuery query = QSqlQuery(Logger::READ_PARAMETERS_TABLE, *db);
 
-    QVariantMap tmp;
+    QVariantList tmp;
+    QVariantMap map;
 
     if (query.exec())
     {
+        map.clear();
         while (query.next())
         {
-            qDebug() << query.record().value("parameter").toString() << " : " << query.record().value("description").toString();
-            tmp.insert(query.record().value("parameter").toString(), query.record().value("description").toString());
+            map.insert("description", query.record().value("description").toString());
+            map.insert("visualize", query.record().value("visualize").toString());
+            map.insert("datatable", query.record().value("datatable").toString());
+            map.insert("name", query.record().value("parameter").toString());
+            tmp.append(map);
         }
     }
     else
     {
-        qDebug() << "test read failed " << query.lastError();
+        qDebug() << "readParameters failed " << query.lastError();
     }
     return tmp;
 }
 
 
 
-void Logger::addParameterEntry(QString parameterName, QString parameterDescription)
+void Logger::addParameterEntry(QString parameterName, QString parameterDescription, bool visualize)
 {
     qDebug() << "Adding entry: " << parameterName << " - " << parameterDescription;
 
@@ -119,6 +123,7 @@ void Logger::addParameterEntry(QString parameterName, QString parameterDescripti
 
     query.addBindValue(parameterName);
     query.addBindValue(parameterDescription);
+    query.addBindValue(visualize ? 1:0 ); // store bool as integer
     query.addBindValue(objHash);
 
     if (query.exec())
@@ -127,8 +132,18 @@ void Logger::addParameterEntry(QString parameterName, QString parameterDescripti
     }
     else
     {
-        qDebug() << "error: " << parameterName << " : " << query.lastError();
+        qDebug() << "addParameterEntry failed " << parameterName << " : " << query.lastError();
     }
+}
+
+void Logger::deleteParameterEntry(QString parameterName)
+{
+    QSqlQuery query = QSqlQuery(Logger::DELETE_PARAMETER, *db);
+    query.addBindValue(parameterName);
+    if (query.exec())
+        qDebug() << "Parameter " << parameterName << " deleted";
+    else
+        qDebug() << "deleteParameterEntry failed";
 }
 
 void Logger::closeDatabase()

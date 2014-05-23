@@ -84,14 +84,19 @@ Page
             {
                 id: parameterItem
                 menu: contextMenu
-                contentHeight: Theme.itemSizeMedium // two line delegate
+                contentHeight: Theme.itemSizeMedium
 
-                ListView.onRemove: animateRemoval(listItem)
+                ListView.onRemove: animateRemoval(parameterItem)
 
                 function remove()
                 {
-                    remorseAction("Deleting", function() { parameters.model.remove(index) })
+                    remorseAction("Deleting", function()
+                    {
+                        logger.deleteParameterEntry(name)
+                        parameters.model.remove(index)
+                    })
                 }
+
 
                 Row
                 {
@@ -127,6 +132,22 @@ Page
                     {
                         MenuItem
                         {
+                            text: "Add values"
+                            onClicked:
+                            {
+                                var dialog = pageStack.push(Qt.resolvedUrl("AddValue.qml"),
+                                                            {"parameterName": name,
+                                                             "parameterDescription": description })
+
+                                dialog.accepted.connect(function()
+                                {
+                                    console.log("dialog accepted, value is " + dialog.value)
+                                })
+                            }
+                        }
+
+                        MenuItem
+                        {
                             text: "Remove"
                             onClicked: remove()
                         }
@@ -148,14 +169,8 @@ Page
                 var a
                 for (a=0; a<parameterList.count; a++)
                 {
-                    console.log(parameterList.get(a))
+                    console.log(parameterList.get(a).name)
                 }
-
-                for (var prop in parameterList)
-                {
-                    console.log("Object item:", prop, "=", parameterList[prop])
-                }
-
             }
             anchors.top: parameters.bottom
             anchors.horizontalCenter: parent.horizontalCenter
@@ -168,16 +183,16 @@ Page
 
         Component.onCompleted:
         {
-            var tmp = logger.testReadEntries("parameters")
+            var tmp = logger.readParameters()
 
-            for (var prop in tmp)
+            for (var i=0 ; i<tmp.length; i++)
             {
-                console.log("Object item:", prop, "=", tmp[prop])
-                parameterList.append({"name": prop,
-                                         "description": tmp[prop],
-                                         "visualize": true })
-            }
+                console.log(i + " = " + tmp[i]["name"] + " is " + (tmp[i]["visualize"] == 1 ? true : false))
 
+                parameterList.append({"name": tmp[i]["name"],
+                                         "description": tmp[i]["description"],
+                                         "visualize": (tmp[i]["visualize"] == 1 ? true : false) })
+            }
         }
     }
 }
