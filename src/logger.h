@@ -32,7 +32,7 @@ public:
     Q_INVOKABLE void readInitParams();
 
     Q_INVOKABLE void addParameterEntry(QString parameterName, QString parameterDescription);
-    Q_INVOKABLE void testReadEntries(QString table);
+    Q_INVOKABLE QVariantMap testReadEntries(QString table);
 
     void closeDatabase();
     void createTables();

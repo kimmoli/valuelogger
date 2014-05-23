@@ -84,22 +84,28 @@ void Logger::createTables()
     }
 }
 
-void Logger::testReadEntries(QString table)
+QVariantMap Logger::testReadEntries(QString table)
 {
     QSqlQuery query = QSqlQuery("SELECT * FROM " + table + " ORDER BY parameter ASC", *db);
+
+    QVariantMap tmp;
 
     if (query.exec())
     {
         while (query.next())
         {
             qDebug() << query.record().value("parameter").toString() << " : " << query.record().value("description").toString();
+            tmp.insert(query.record().value("parameter").toString(), query.record().value("description").toString());
         }
     }
     else
     {
         qDebug() << "test read failed " << query.lastError();
     }
+    return tmp;
 }
+
+
 
 void Logger::addParameterEntry(QString parameterName, QString parameterDescription)
 {

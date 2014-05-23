@@ -150,6 +150,12 @@ Page
                 {
                     console.log(parameterList.get(a))
                 }
+
+                for (var prop in parameterList)
+                {
+                    console.log("Object item:", prop, "=", parameterList[prop])
+                }
+
             }
             anchors.top: parameters.bottom
             anchors.horizontalCenter: parent.horizontalCenter
@@ -160,7 +166,19 @@ Page
     {
         id: logger
 
-        Component.onCompleted: logger.testReadEntries("parameters")
+        Component.onCompleted:
+        {
+            var tmp = logger.testReadEntries("parameters")
+
+            for (var prop in tmp)
+            {
+                console.log("Object item:", prop, "=", tmp[prop])
+                parameterList.append({"name": prop,
+                                         "description": tmp[prop],
+                                         "visualize": true })
+            }
+
+        }
     }
 }
 
