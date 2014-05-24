@@ -164,7 +164,12 @@ Page
                             text: "Show raw data"
                             onClicked:
                             {
+                                var tmp = logger.readData(dataTable)
 
+                                for (var i=0 ; i<tmp.length; i++)
+                                {
+                                    console.log(i + " = " + tmp[i]["timestamp"] + " = " + tmp[i]["value"])
+                                }
                             }
                         }
 

@@ -130,10 +130,25 @@ void Logger::addData(QString table, QString value, QString timestamp)
 
 QVariantList Logger::readData(QString table)
 {
-    QSqlQuery query = QSqlQuery("SELECT * FROM " + table + " ORDER BY timestamp ASC", *db);
+    QSqlQuery query = QSqlQuery("SELECT * FROM _" + table + " ORDER BY timestamp ASC", *db);
 
     QVariantList tmp;
     QVariantMap map;
+
+    if (query.exec())
+    {
+        map.clear();
+        while (query.next())
+        {
+            map.insert("timestamp", query.record().value("timestamp").toString());
+            map.insert("value", query.record().value("value").toString());
+            tmp.append(map);
+        }
+    }
+    else
+    {
+        qDebug() << "readParameters failed " << query.lastError();
+    }
 
     return tmp;
 }
