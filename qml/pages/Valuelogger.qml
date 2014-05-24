@@ -113,6 +113,10 @@ Page
                     {
                         id: parSwitch
                         checked: visualize
+                        onCheckedChanged:
+                        {
+                            parameterList.setProperty(index, "visualize", checked)
+                        }
                     }
 
                     Column
@@ -205,8 +209,17 @@ Page
                 var a
                 for (a=0; a<parameterList.count; a++)
                 {
-                    console.log(parameterList.get(a).name)
+                    if (parameterList.get(a).visualize)
+                        console.log("showing data from " + parameterList.get(a).parName)
                 }
+                var l = logger.readData(parameterList.get(0).dataTable)
+
+                for (var i=0 ; i<l.length; i++)
+                {
+                    console.log("timestamp " +  l[i]["timestamp"] + " value " + l[i]["value"])
+                }
+
+                pageStack.push(Qt.resolvedUrl("DrawData.qml"), {"dataList": l})
             }
             anchors.top: parameters.bottom
             anchors.horizontalCenter: parent.horizontalCenter
