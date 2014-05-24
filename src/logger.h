@@ -31,19 +31,16 @@ public:
 
     Q_INVOKABLE void readInitParams();
 
-    Q_INVOKABLE void addParameterEntry(QString parameterName, QString parameterDescription, bool visualize);
+    Q_INVOKABLE QString addParameterEntry(QString parameterName, QString parameterDescription, bool visualize);
     Q_INVOKABLE void deleteParameterEntry(QString parameterName);
     Q_INVOKABLE QVariantList readParameters();
     Q_INVOKABLE QVariantList readData(QString table);
+    Q_INVOKABLE void addData(QString table, QString value, QString timestamp);
 
     void closeDatabase();
     void createParameterTable();
     void createDataTable(QString table);
 
-//    static const QString CREATE_PARAMETERS_TABLE_QUERY;
-//    static const QString CREATE_UPDATE_PARAMETER_QUERY;
-//    static const QString READ_PARAMETERS_TABLE;
-//    static const QString DELETE_PARAMETER;
     static const QString DB_NAME;
 
 signals:

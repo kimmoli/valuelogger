@@ -15,9 +15,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <QtSql>
 
 const QString Logger::DB_NAME = "";
-//const QString Logger::CREATE_UPDATE_PARAMETER_QUERY = "INSERT OR REPLACE INTO parameters (parameter,description,visualize,datatable) VALUES (?,?,?,?)";
-//const QString Logger::DELETE_PARAMETER = "DELETE FROM parameters WHERE parameter = ?";
-//const QString Logger::READ_PARAMETERS_TABLE = "SELECT * FROM parameters ORDER BY parameter ASC";
 
 Logger::Logger(QObject *parent) :
     QObject(parent)
@@ -73,25 +70,48 @@ void Logger::readInitParams()
 
 void Logger::createDataTable(QString table)
 {
-    QVector <QString> queries;
+    QSqlQuery query = QSqlQuery("CREATE TABLE " + table + "(timestamp TEXT PRIMARY KEY, value TEXT)", *db);
 
-    queries.append("CREATE TABLE " + table + "(id INTEGER PRIMARY KEY, value REAL, timestamp TEXT)");
 
-    for(int i=0;i<queries.size();i++)
+    if (query.exec())
     {
-        db->exec(queries.at(i));
+        qDebug() << "datatable created " << table;
+    }
+    else
+    {
+        qDebug() << "datatable not created " << table << " : " << query.lastError();
     }
 }
 
 void Logger::createParameterTable()
 {
-    QVector <QString> queries;
+    QSqlQuery query = QSqlQuery("CREATE TABLE parameters (parameter TEXT PRIMARY KEY, description TEXT, visualize INTEGER, datatable TEXT)", *db);
 
-    queries.append("CREATE TABLE parameters (parameter TEXT PRIMARY KEY, description TEXT, visualize INTEGER, datatable TEXT)");
-
-    for(int i=0;i<queries.size();i++)
+    if (query.exec())
     {
-        db->exec(queries.at(i));
+        qDebug() << "parameter table created";
+    }
+    else
+    {
+        qDebug() << "parameter table not created : " << query.lastError();
+    }
+}
+
+void Logger::addData(QString table, QString value, QString timestamp)
+{
+    qDebug() << "Adding " << value << " (" << timestamp << ") to " << table;
+
+    QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO " + table + " (timestamp,value) VALUES (?,?)", *db);
+    query.addBindValue(timestamp);
+    query.addBindValue(value);
+
+    if (query.exec())
+    {
+        qDebug() << "data added " << timestamp << " = " << value;
+    }
+    else
+    {
+        qDebug() << "failed " << timestamp << " = " << value << " : " << query.lastError();
     }
 }
 
@@ -102,6 +122,7 @@ QVariantList Logger::readData(QString table)
     QVariantList tmp;
     QVariantMap map;
 
+    return tmp;
 }
 
 QVariantList Logger::readParameters()
@@ -132,7 +153,7 @@ QVariantList Logger::readParameters()
 
 
 
-void Logger::addParameterEntry(QString parameterName, QString parameterDescription, bool visualize)
+QString Logger::addParameterEntry(QString parameterName, QString parameterDescription, bool visualize)
 {
     qDebug() << "Adding entry: " << parameterName << " - " << parameterDescription;
 
@@ -150,11 +171,15 @@ void Logger::addParameterEntry(QString parameterName, QString parameterDescripti
     if (query.exec())
     {
         qDebug() << "parameter added: " << parameterName;
+
+        createDataTable(objHash);
     }
     else
     {
         qDebug() << "addParameterEntry failed " << parameterName << " : " << query.lastError();
     }
+
+    return objHash;
 }
 
 void Logger::deleteParameterEntry(QString parameterName)

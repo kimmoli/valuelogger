@@ -56,11 +56,13 @@ Page
                         console.log(dialog.parameterName)
                         console.log(dialog.parameterDescription)
 
+                        var datatable = logger.addParameterEntry(dialog.parameterName, dialog.parameterDescription, true)
+
                         parameterList.append({"parName": dialog.parameterName,
                                                  "parDescription": dialog.parameterDescription,
-                                                 "visualize": true })
+                                                 "visualize": true,
+                                                 "dataTable": datatable})
 
-                        logger.addParameterEntry(dialog.parameterName, dialog.parameterDescription, true)
                     } )
 
                 }
@@ -92,7 +94,7 @@ Page
                 {
                     remorseAction("Deleting", function()
                     {
-                        logger.deleteParameterEntry(name)
+                        logger.deleteParameterEntry(parName)
                         parameters.model.remove(index)
                     })
                 }
@@ -145,6 +147,8 @@ Page
                                 console.log(" value is " + dialog.value)
                                 console.log(" date is " + dialog.nowDate)
                                 console.log(" time is " + dialog.nowTime)
+
+                                logger.addData(dataTable, dialog.value, dialog.nowDate + " " + dialog.nowTime)
                             })
                         }
                     }
@@ -209,6 +213,7 @@ Page
 
                 parameterList.append({"parName": tmp[i]["name"],
                                          "parDescription": tmp[i]["description"],
+                                         "dataTable": tmp[i]["datatable"],
                                          "visualize": (tmp[i]["visualize"] == 1 ? true : false) })
             }
         }
