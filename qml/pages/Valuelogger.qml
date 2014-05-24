@@ -30,6 +30,11 @@ Page
             id: parameterList
         }
 
+        ListModel
+        {
+            id: dataList
+        }
+
         Column
         {
             id: column
@@ -166,10 +171,14 @@ Page
                             {
                                 var tmp = logger.readData(dataTable)
 
+                                dataList.clear()
+
                                 for (var i=0 ; i<tmp.length; i++)
                                 {
                                     console.log(i + " = " + tmp[i]["timestamp"] + " = " + tmp[i]["value"])
+                                    dataList.append( {"value": tmp[i]["value"], "timestamp": tmp[i]["timestamp"]} )
                                 }
+                                pageStack.push(Qt.resolvedUrl("ShowData.qml"), { "parName": parName, "dataList": dataList } );
                             }
                         }
 

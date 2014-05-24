@@ -100,8 +100,9 @@ Dialog
                            dialogDate.accepted.connect(function()
                            {
                                console.log("You chose: " + dialogDate.dateText)
-
-                               updateDateTime(dialogDate.dateText, nowTime)
+                               // use date, as dateText return varies
+                               var d = dialogDate.date
+                               updateDateTime(Qt.formatDateTime(new Date(d), "yyyy-MM-dd"), nowTime)
                            })
                 }
                 Component
@@ -154,7 +155,7 @@ Dialog
             focus: true
             width: parent.width
             label: "Value"
-            font.pointSize: Theme.fontSizeExtraLarge
+            font.pixelSize: Theme.fontSizeExtraLarge
             color: Theme.primaryColor
             placeholderText: "Enter new value here"
             onTextChanged: page.canAccept = text.length > 0
