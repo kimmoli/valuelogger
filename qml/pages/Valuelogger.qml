@@ -56,11 +56,11 @@ Page
                         console.log(dialog.parameterName)
                         console.log(dialog.parameterDescription)
 
-                        parameterList.append({"name": dialog.parameterName,
-                                                 "description": dialog.parameterDescription,
+                        parameterList.append({"parName": dialog.parameterName,
+                                                 "parDescription": dialog.parameterDescription,
                                                  "visualize": true })
 
-                        logger.addParameterEntry(dialog.parameterName, dialog.parameterDescription, parameterList.get(parameterList.count-1))
+                        logger.addParameterEntry(dialog.parameterName, dialog.parameterDescription, true)
                     } )
 
                 }
@@ -100,7 +100,8 @@ Page
 
                 Row
                 {
-                    x: Theme.paddingMedium
+                    width: parent.width - Theme.paddingMedium
+
                     Switch
                     {
                         id: parSwitch
@@ -110,17 +111,41 @@ Page
                     Column
                     {
                         anchors.verticalCenter: parent.verticalCenter
+                        width: parent.width - parSwitch.width - addValueButton.width
                         Label
                         {
                             id: parNameLabel
-                            text: name
+                            text: parName
                             color: parameterItem.highlighted ? Theme.highlightColor : Theme.primaryColor
                         }
                         Label
                         {
-                            text: description
+                            text: parDescription
                             font.pixelSize: Theme.fontSizeSmall
                             color: parameterItem.highlighted ? Theme.highlightColor : Theme.secondaryColor
+                        }
+                    }
+
+                    IconButton
+                    {
+                        id: addValueButton
+                        anchors.verticalCenter: parent.verticalCenter
+                        icon.source: "image://theme/icon-m-add"
+                        onClicked:
+                        {
+                            console.log("clicked add value button")
+
+                            var dialog = pageStack.push(Qt.resolvedUrl("AddValue.qml"),
+                                                        {"parameterName": parName,
+                                                         "parameterDescription": parDescription })
+
+                            dialog.accepted.connect(function()
+                            {
+                                console.log("dialog accepted")
+                                console.log(" value is " + dialog.value)
+                                console.log(" date is " + dialog.nowDate)
+                                console.log(" time is " + dialog.nowTime)
+                            })
                         }
                     }
                 }
@@ -132,17 +157,10 @@ Page
                     {
                         MenuItem
                         {
-                            text: "Add values"
+                            text: "Show raw data"
                             onClicked:
                             {
-                                var dialog = pageStack.push(Qt.resolvedUrl("AddValue.qml"),
-                                                            {"parameterName": name,
-                                                             "parameterDescription": description })
 
-                                dialog.accepted.connect(function()
-                                {
-                                    console.log("dialog accepted, value is " + dialog.value)
-                                })
                             }
                         }
 
@@ -189,8 +207,8 @@ Page
             {
                 console.log(i + " = " + tmp[i]["name"] + " is " + (tmp[i]["visualize"] == 1 ? true : false))
 
-                parameterList.append({"name": tmp[i]["name"],
-                                         "description": tmp[i]["description"],
+                parameterList.append({"parName": tmp[i]["name"],
+                                         "parDescription": tmp[i]["description"],
                                          "visualize": (tmp[i]["visualize"] == 1 ? true : false) })
             }
         }

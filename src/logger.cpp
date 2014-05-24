@@ -15,10 +15,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <QtSql>
 
 const QString Logger::DB_NAME = "";
-const QString Logger::CREATE_PARAMETERS_TABLE_QUERY = "CREATE TABLE parameters (parameter TEXT PRIMARY KEY, description TEXT, visualize INTEGER, datatable TEXT)";
-const QString Logger::CREATE_UPDATE_PARAMETER_QUERY = "INSERT OR REPLACE INTO parameters (parameter,description,visualize,datatable) VALUES (?,?,?,?)";
-const QString Logger::DELETE_PARAMETER = "DELETE FROM parameters WHERE parameter = ?";
-const QString Logger::READ_PARAMETERS_TABLE = "SELECT * FROM parameters ORDER BY parameter ASC";
+//const QString Logger::CREATE_UPDATE_PARAMETER_QUERY = "INSERT OR REPLACE INTO parameters (parameter,description,visualize,datatable) VALUES (?,?,?,?)";
+//const QString Logger::DELETE_PARAMETER = "DELETE FROM parameters WHERE parameter = ?";
+//const QString Logger::READ_PARAMETERS_TABLE = "SELECT * FROM parameters ORDER BY parameter ASC";
 
 Logger::Logger(QObject *parent) :
     QObject(parent)
@@ -50,7 +49,8 @@ Logger::Logger(QObject *parent) :
         qDebug() << " " << db->lastError().text();
 //        dbOpenError();
     }
-    createTables();
+
+    createParameterTable();
 
     /* Read settings */
 
@@ -71,11 +71,11 @@ void Logger::readInitParams()
     emit varChanged();
 }
 
-void Logger::createTables()
+void Logger::createDataTable(QString table)
 {
     QVector <QString> queries;
 
-    queries.append(Logger::CREATE_PARAMETERS_TABLE_QUERY);
+    queries.append("CREATE TABLE " + table + "(id INTEGER PRIMARY KEY, value REAL, timestamp TEXT)");
 
     for(int i=0;i<queries.size();i++)
     {
@@ -83,9 +83,30 @@ void Logger::createTables()
     }
 }
 
+void Logger::createParameterTable()
+{
+    QVector <QString> queries;
+
+    queries.append("CREATE TABLE parameters (parameter TEXT PRIMARY KEY, description TEXT, visualize INTEGER, datatable TEXT)");
+
+    for(int i=0;i<queries.size();i++)
+    {
+        db->exec(queries.at(i));
+    }
+}
+
+QVariantList Logger::readData(QString table)
+{
+    QSqlQuery query = QSqlQuery("SELECT * FROM " + table + " ORDER BY timestamp ASC", *db);
+
+    QVariantList tmp;
+    QVariantMap map;
+
+}
+
 QVariantList Logger::readParameters()
 {
-    QSqlQuery query = QSqlQuery(Logger::READ_PARAMETERS_TABLE, *db);
+    QSqlQuery query = QSqlQuery("SELECT * FROM parameters ORDER BY parameter ASC", *db);
 
     QVariantList tmp;
     QVariantMap map;
@@ -119,7 +140,7 @@ void Logger::addParameterEntry(QString parameterName, QString parameterDescripti
 
     qDebug() << "hash" << objHash;
 
-    QSqlQuery query = QSqlQuery(Logger::CREATE_UPDATE_PARAMETER_QUERY, *db);
+    QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO parameters (parameter,description,visualize,datatable) VALUES (?,?,?,?)", *db);
 
     query.addBindValue(parameterName);
     query.addBindValue(parameterDescription);
@@ -138,7 +159,7 @@ void Logger::addParameterEntry(QString parameterName, QString parameterDescripti
 
 void Logger::deleteParameterEntry(QString parameterName)
 {
-    QSqlQuery query = QSqlQuery(Logger::DELETE_PARAMETER, *db);
+    QSqlQuery query = QSqlQuery("DELETE FROM parameters WHERE parameter = ?", *db);
     query.addBindValue(parameterName);
     if (query.exec())
         qDebug() << "Parameter " << parameterName << " deleted";
