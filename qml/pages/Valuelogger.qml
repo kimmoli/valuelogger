@@ -94,7 +94,7 @@ Page
                 {
                     remorseAction("Deleting", function()
                     {
-                        logger.deleteParameterEntry(parName)
+                        logger.deleteParameterEntry(parName, dataTable)
                         parameters.model.remove(index)
                     })
                 }

@@ -32,10 +32,12 @@ public:
     Q_INVOKABLE void readInitParams();
 
     Q_INVOKABLE QString addParameterEntry(QString parameterName, QString parameterDescription, bool visualize);
-    Q_INVOKABLE void deleteParameterEntry(QString parameterName);
+    Q_INVOKABLE void deleteParameterEntry(QString parameterName, QString datatable);
     Q_INVOKABLE QVariantList readParameters();
     Q_INVOKABLE QVariantList readData(QString table);
     Q_INVOKABLE void addData(QString table, QString value, QString timestamp);
+
+    void dropDataTable(QString table);
 
     void closeDatabase();
     void createParameterTable();

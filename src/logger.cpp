@@ -70,24 +70,37 @@ void Logger::readInitParams()
 
 void Logger::createDataTable(QString table)
 {
-    QSqlQuery query = QSqlQuery("CREATE TABLE " + table + "(timestamp TEXT PRIMARY KEY, value TEXT)", *db);
+    QSqlQuery query;
 
-
-    if (query.exec())
+    if (query.exec("CREATE TABLE _" + table + " (timestamp TEXT PRIMARY KEY, value TEXT)"))
     {
-        qDebug() << "datatable created " << table;
+        qDebug() << "datatable created _" << table;
     }
     else
     {
-        qDebug() << "datatable not created " << table << " : " << query.lastError();
+        qDebug() << "datatable not created _" << table << " : " << query.lastError();
+    }
+}
+
+void Logger::dropDataTable(QString table)
+{
+    QSqlQuery query;
+
+    if (query.exec("DROP TABLE IF EXISTS _" + table))
+    {
+        qDebug() << "datatable dropped _" << table;
+    }
+    else
+    {
+        qDebug() << "datatable not dropped _" << table << " : " << query.lastError();
     }
 }
 
 void Logger::createParameterTable()
 {
-    QSqlQuery query = QSqlQuery("CREATE TABLE parameters (parameter TEXT PRIMARY KEY, description TEXT, visualize INTEGER, datatable TEXT)", *db);
+    QSqlQuery query;
 
-    if (query.exec())
+    if (query.exec("CREATE TABLE IF NOT EXISTS parameters (parameter TEXT PRIMARY KEY, description TEXT, visualize INTEGER, datatable TEXT)"))
     {
         qDebug() << "parameter table created";
     }
@@ -101,7 +114,7 @@ void Logger::addData(QString table, QString value, QString timestamp)
 {
     qDebug() << "Adding " << value << " (" << timestamp << ") to " << table;
 
-    QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO " + table + " (timestamp,value) VALUES (?,?)", *db);
+    QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO _" + table + " (timestamp,value) VALUES (?,?)", *db);
     query.addBindValue(timestamp);
     query.addBindValue(value);
 
@@ -182,7 +195,7 @@ QString Logger::addParameterEntry(QString parameterName, QString parameterDescri
     return objHash;
 }
 
-void Logger::deleteParameterEntry(QString parameterName)
+void Logger::deleteParameterEntry(QString parameterName, QString datatable)
 {
     QSqlQuery query = QSqlQuery("DELETE FROM parameters WHERE parameter = ?", *db);
     query.addBindValue(parameterName);
@@ -190,6 +203,8 @@ void Logger::deleteParameterEntry(QString parameterName)
         qDebug() << "Parameter " << parameterName << " deleted";
     else
         qDebug() << "deleteParameterEntry failed";
+
+    dropDataTable(datatable);
 }
 
 void Logger::closeDatabase()
