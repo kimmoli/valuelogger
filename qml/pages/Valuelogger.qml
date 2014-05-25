@@ -170,6 +170,7 @@ Page
                                 var tmp = logger.readData(dataTable)
 
                                 dataList.clear()
+                                parNamesModel.clear()
 
                                 for (var i=0 ; i<tmp.length; i++)
                                 {
@@ -203,19 +204,21 @@ Page
                 console.log("there is " + parameterList.count + " items in list.")
 
                 var l = []
+                parNames.clear()
 
                 for (var a=0; a<parameterList.count; a++)
                 {
                     if (parameterList.get(a).visualize)
                     {
                         console.log("showing data from " + parameterList.get(a).parName)
+                        parNames.append({"name": parameterList.get(a).parName})
                         l.push(logger.readData(parameterList.get(a).dataTable))
                     }
                 }
 
                 if (l.length > 0 && l.length < 10)
                 {
-                    pageStack.push(Qt.resolvedUrl("DrawData.qml"), {"dataList": l})
+                    pageStack.push(Qt.resolvedUrl("DrawData.qml"), {"dataList": l, "parNames": parNames})
                 }
                 else
                     console.log("ERROR: None or too many plots selected")
@@ -223,6 +226,12 @@ Page
             }
             anchors.top: parameters.bottom
             anchors.horizontalCenter: parent.horizontalCenter
+
+            ListModel
+            {
+                id: parNames
+            }
+
         }
     }
 

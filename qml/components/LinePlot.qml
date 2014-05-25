@@ -9,10 +9,14 @@ Rectangle
     color: "transparent"
 
     property var dataListModel: null
+    property var parNamesModel: null
     property string column: "value"
 
     property int min : 0
     property int max : 1
+
+    property int fontSize: 14
+    property bool fontBold: true
 
     property date xstart : new Date()
     property date xend : new Date()
@@ -71,7 +75,8 @@ Rectangle
     {
         id: xStart
         color: Theme.primaryColor
-        font.pointSize: 12
+        font.pointSize: fontSize
+        font.bold: fontBold
         wrapMode: Text.WordWrap
         anchors.right: parent.right
         anchors.rightMargin: 0
@@ -83,7 +88,8 @@ Rectangle
     {
         id: xEnd
         color: Theme.primaryColor
-        font.pointSize: 12
+        font.pointSize: fontSize
+        font.bold: fontBold
         wrapMode: Text.WordWrap
         anchors.left: parent.left
         anchors.leftMargin: 0
@@ -97,7 +103,8 @@ Rectangle
         id: valueMax
         color: Theme.primaryColor
         width: 50
-        font.pointSize: 12
+        font.pointSize: fontSize
+        font.bold: fontBold
         wrapMode: Text.WordWrap
         anchors.left: parent.left
         anchors.leftMargin: 0
@@ -110,7 +117,8 @@ Rectangle
         id: valueMin
         color: Theme.primaryColor
         width: 50
-        font.pointSize: 12
+        font.pointSize: fontSize
+        font.bold: fontBold
         wrapMode: Text.WordWrap
         anchors.left: parent.left
         anchors.leftMargin: 0
@@ -127,15 +135,68 @@ Rectangle
         {
             color: Theme.primaryColor
             width: 50
-            font.pointSize: 12
+            font.pointSize: fontSize
+            font.bold: fontBold
             wrapMode: Text.WordWrap
             anchors.left: parent.left
             anchors.leftMargin: 0
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: (index+1) * ((parent.height/5) - 12 )
+            anchors.bottomMargin: (index+1) * ((parent.height/5) - fontSize )
             text: "unk"
             z: 10
         }
+    }
+
+    ListView
+    {
+        x: 150
+        y: 150
+        z: 11
+        height: fontSize*1.2*10
+        id: legend
+        model: parNamesModel
+
+        delegate: ListItem
+        {
+            contentHeight: fontSize*2
+
+            Row
+            {
+                id: legendRow
+                height: fontSize*2
+                spacing: 10
+                Rectangle
+                {
+                    id: legendColor
+                    width: 30
+                    height: 3
+                    color: plotColors[index]
+                }
+                Text
+                {
+                    text: name
+                    color: Theme.primaryColor
+                    font.pointSize: fontSize
+                    font.bold: fontBold
+                    anchors.verticalCenter: legendColor.verticalCenter
+                }
+            }
+        }
+
+        onOpacityChanged:
+        {
+            if (opacity == 1.0)
+                legendVisibility.start()
+        }
+
+        Timer
+        {
+            id: legendVisibility
+            interval: 2000
+            running: true
+            onTriggered:  PropertyAnimation { duration: 500; target: legend; property: "opacity"; to: 0 }
+        }
+
     }
 
     Canvas
@@ -146,6 +207,12 @@ Rectangle
         anchors.bottom: valueMin.top
         renderTarget: Canvas.FramebufferObject
         antialiasing: true
+
+        MouseArea
+        {
+            anchors.fill: canvas
+            onClicked: legend.opacity = 1.0
+        }
 
         property int first: 0
         property int last: 0
