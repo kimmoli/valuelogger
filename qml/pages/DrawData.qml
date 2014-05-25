@@ -8,6 +8,7 @@ Page
 {
     property var dataList : []
 
+    allowedOrientations: Orientation.Portrait | Orientation.Landscape
 
     LinePlot
     {
