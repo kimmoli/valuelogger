@@ -13,12 +13,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <QCoreApplication>
 #include <QCryptographicHash>
 #include <QtSql>
+#include <QTime>
+#include <QColor>
 
 const QString Logger::DB_NAME = "";
 
 Logger::Logger(QObject *parent) :
     QObject(parent)
 {
+    /* Initialise random number generator */
+    qsrand( QDateTime::currentDateTime().toTime_t() );
+
     /* Open the SQLite database */
 
     QDir dbdir(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
@@ -77,7 +82,7 @@ void Logger::createDataTable(QString table)
 {
     QSqlQuery query;
 
-    if (query.exec("CREATE TABLE _" + table + " (timestamp TEXT PRIMARY KEY, value TEXT)"))
+    if (query.exec("CREATE TABLE _" + table + " (key TEXT PRIMARY KEY, timestamp TEXT, value TEXT)"))
     {
         qDebug() << "datatable created _" << table;
     }
@@ -113,7 +118,7 @@ void Logger::createParameterTable()
 {
     QSqlQuery query;
 
-    if (query.exec("CREATE TABLE IF NOT EXISTS parameters (parameter TEXT PRIMARY KEY, description TEXT, visualize INTEGER, datatable TEXT)"))
+    if (query.exec("CREATE TABLE IF NOT EXISTS parameters (parameter TEXT PRIMARY KEY, description TEXT, visualize INTEGER, plotcolor TEXT, datatable TEXT)"))
     {
         qDebug() << "parameter table created";
     }
@@ -125,13 +130,18 @@ void Logger::createParameterTable()
 
 /*
  * Add new data entry to a parameter
+ * key = "" to generate new
  */
 
-void Logger::addData(QString table, QString value, QString timestamp)
+QString Logger::addData(QString table, QString key, QString value, QString timestamp)
 {
     qDebug() << "Adding " << value << " (" << timestamp << ") to " << table;
 
-    QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO _" + table + " (timestamp,value) VALUES (?,?)", *db);
+    QString objHash = ( (key.length() > 0) ? key : generateHash(value));
+
+    QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO _" + table + " (key,timestamp,value) VALUES (?,?,?)", *db);
+
+    query.addBindValue(objHash);
     query.addBindValue(timestamp);
     query.addBindValue(value);
 
@@ -143,6 +153,7 @@ void Logger::addData(QString table, QString value, QString timestamp)
     {
         qDebug() << "failed " << timestamp << " = " << value << " : " << query.lastError();
     }
+    return objHash;
 }
 
 /*
@@ -161,6 +172,7 @@ QVariantList Logger::readData(QString table)
         map.clear();
         while (query.next())
         {
+            map.insert("key", query.record().value("key").toString());
             map.insert("timestamp", query.record().value("timestamp").toString());
             map.insert("value", query.record().value("value").toString());
             tmp.append(map);
@@ -178,16 +190,16 @@ QVariantList Logger::readData(QString table)
  * Delete one data entry of a parameter
  */
 
-void Logger::deleteData(QString table, QString timestamp)
+void Logger::deleteData(QString table, QString key)
 {
-    QSqlQuery query = QSqlQuery("DELETE FROM _" + table + " WHERE timestamp = ?", *db);
+    QSqlQuery query = QSqlQuery("DELETE FROM _" + table + " WHERE key = ?", *db);
 
-    query.addBindValue(timestamp);
+    query.addBindValue(key);
 
     if (query.exec())
-        qDebug() << "Data logged at " << timestamp << " deleted";
+        qDebug() << "Data logged with " << key << " deleted";
     else
-        qDebug() << "deleting data failed: " << table << " " << timestamp << " : " << query.lastError();
+        qDebug() << "deleting data failed: " << table << " " << key << " : " << query.lastError();
 
 }
 
@@ -209,6 +221,7 @@ QVariantList Logger::readParameters()
         {
             map.insert("description", query.record().value("description").toString());
             map.insert("visualize", query.record().value("visualize").toString());
+            map.insert("plotcolor", query.record().value("plotcolor").toString());
             map.insert("datatable", query.record().value("datatable").toString());
             map.insert("name", query.record().value("parameter").toString());
             tmp.append(map);
@@ -222,24 +235,38 @@ QVariantList Logger::readParameters()
 }
 
 /*
- * Add created parameter entry to parameter table
- *
- * datatable is md5 is parameter name
+ * Generates md5 of some data
  */
 
-QString Logger::addParameterEntry(QString parameterName, QString parameterDescription, bool visualize)
+QString Logger::generateHash(QString sometext)
 {
-    qDebug() << "Adding entry: " << parameterName << " - " << parameterDescription;
+    int rnd = qrand();
 
-    QString objHash = QString(QCryptographicHash::hash((parameterName.toUtf8()),QCryptographicHash::Md5).toHex());
+    QString tmp = QString("%1 %2 %3").arg(sometext).arg(rnd).arg(QTime::currentTime().hour());
+
+    return QString(QCryptographicHash::hash((tmp.toUtf8()),QCryptographicHash::Md5).toHex());
+}
+
+/*
+ * Add created parameter entry to parameter table
+ *
+ * datatable name is md5 of timestamp + random number
+ */
+
+QString Logger::addParameterEntry(QString parameterName, QString parameterDescription, bool visualize, QColor plotColor)
+{
+    qDebug() << "Adding entry: " << parameterName << " - " << parameterDescription << " color " << plotColor;
+
+    QString objHash = generateHash(parameterName);
 
     qDebug() << "hash" << objHash;
 
-    QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO parameters (parameter,description,visualize,datatable) VALUES (?,?,?,?)", *db);
+    QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO parameters (parameter,description,visualize,plotcolor,datatable) VALUES (?,?,?,?,?)", *db);
 
     query.addBindValue(parameterName);
     query.addBindValue(parameterDescription);
     query.addBindValue(visualize ? 1:0 ); // store bool as integer
+    query.addBindValue(plotColor.name());
     query.addBindValue(objHash);
 
     if (query.exec())

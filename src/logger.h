@@ -12,6 +12,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #define LOGGER_H
 #include <QObject>
 #include <QtSql>
+#include <QColor>
 
 
 class Logger : public QObject
@@ -31,14 +32,16 @@ public:
 
     Q_INVOKABLE void readInitParams();
 
-    Q_INVOKABLE QString addParameterEntry(QString parameterName, QString parameterDescription, bool visualize);
+    Q_INVOKABLE QString addParameterEntry(QString parameterName, QString parameterDescription, bool visualize, QColor plotColor);
     Q_INVOKABLE void deleteParameterEntry(QString parameterName, QString datatable);
     Q_INVOKABLE QVariantList readParameters();
     Q_INVOKABLE QVariantList readData(QString table);
-    Q_INVOKABLE void addData(QString table, QString value, QString timestamp);
-    Q_INVOKABLE void deleteData(QString table, QString timestamp);
+    Q_INVOKABLE QString addData(QString table, QString key, QString value, QString timestamp);
+    Q_INVOKABLE void deleteData(QString table, QString key);
 
     void dropDataTable(QString table);
+
+    QString generateHash(QString sometext);
 
     void closeDatabase();
     void createParameterTable();

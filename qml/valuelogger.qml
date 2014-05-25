@@ -27,10 +27,11 @@ ApplicationWindow
 
             for (var i=0 ; i<tmp.length; i++)
             {
-                console.log(i + " = " + tmp[i]["name"] + " is " + (tmp[i]["visualize"] == 1 ? true : false))
+                console.log(i + " = " + tmp[i]["name"] + " is " + tmp[i]["plotcolor"] )
 
                 parameterList.append({"parName": tmp[i]["name"],
                                          "parDescription": tmp[i]["description"],
+                                         "plotcolor": tmp[i]["plotcolor"],
                                          "dataTable": tmp[i]["datatable"],
                                          "visualize": (tmp[i]["visualize"] == 1 ? true : false) })
             }

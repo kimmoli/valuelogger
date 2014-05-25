@@ -7,7 +7,7 @@ Page
 {
     id: drawDataPage
     property var dataList : []
-    property var parNames : null
+    property var parInfo : null
 
     allowedOrientations: Orientation.Portrait | Orientation.Landscape
 
@@ -20,7 +20,7 @@ Page
     LinePlot
     {
         dataListModel: dataList
-        parNamesModel: parNames
+        parInfoModel: parInfo
         id: plot
         width: parent.width - Theme.paddingLarge
         height: parent.height

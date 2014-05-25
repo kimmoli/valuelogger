@@ -9,7 +9,7 @@ Rectangle
     color: "transparent"
 
     property var dataListModel: null
-    property var parNamesModel: null
+    property var parInfoModel: null
     property string column: "value"
 
     property int min : 0
@@ -150,7 +150,7 @@ Rectangle
         z: 11
         height: fontSize*1.2*10
         id: legend
-        model: parNamesModel
+        model: parInfoModel
 
         delegate: ListItem
         {
@@ -166,7 +166,7 @@ Rectangle
                     id: legendColor
                     width: 30
                     height: 3
-                    color: plotColors[index]
+                    color: plotcolor
                 }
                 Text
                 {
@@ -177,6 +177,11 @@ Rectangle
                     anchors.verticalCenter: legendColor.verticalCenter
                 }
             }
+        }
+
+        Behavior on opacity
+        {
+            FadeAnimation {}
         }
 
         onOpacityChanged:
@@ -190,7 +195,8 @@ Rectangle
             id: legendVisibility
             interval: 2000
             running: true
-            onTriggered:  PropertyAnimation { duration: 500; target: legend; property: "opacity"; to: 0 }
+            onTriggered:  legend.opacity = 0.0
+                //PropertyAnimation { duration: 500; target: legend; property: "opacity"; to: 0 }
         }
 
     }
@@ -297,8 +303,12 @@ Rectangle
             console.log("min " + min + " max " + max)
             console.log("start " + Qt.formatDateTime(xstart, "dd.MM.yyyy hh:mm") + " end " + Qt.formatDateTime(xend, "dd.MM.yyyy hh:mm"))
 
+            console.log(parInfoModel)
+
             for (n=0; n<dataListModel.length; n++)
+            {
                 drawPlot(ctx, dataListModel[n], plotColors[n], column);
+            }
         }
     }
 }

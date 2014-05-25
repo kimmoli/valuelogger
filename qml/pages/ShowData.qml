@@ -9,7 +9,8 @@ Page
 
     property var dataList : []
     property string parName : "Name goes here"
-    property string dataTable : "kukkuu"
+    property string parDescription : "Description goes here"
+    property string dataTable : "Data table name here"
 
     PageHeader
     {
@@ -41,7 +42,7 @@ Page
                 console.log("Deleting...")
                 remorseAction("Deleting", function()
                 {
-                    logger.deleteData(dataTable, timestamp)
+                    logger.deleteData(dataTable, key)
                     dataListView.model.remove(index)
                 }, 2500 )
             }
@@ -74,6 +75,33 @@ Page
                 id: contextMenu
                 ContextMenu
                 {
+                    MenuItem
+                    {
+                        text: "Edit"
+                        onClicked:
+                        {
+                            var dialog = pageStack.push(Qt.resolvedUrl("AddValue.qml"),
+                                                        {"parameterName": parName,
+                                                         "parameterDescription": parDescription,
+                                                         "value": value,
+                                                         "nowDate": Qt.formatDateTime(new Date(timestamp), "yyyy-MM-dd"),
+                                                         "nowTime": Qt.formatDateTime(new Date(timestamp), "hh:mm:ss")})
+
+                            dialog.accepted.connect(function()
+                            {
+                                console.log("dialog accepted")
+                                console.log(" value is " + dialog.value)
+                                console.log(" date is " + dialog.nowDate)
+                                console.log(" time is " + dialog.nowTime)
+
+                                dataList.setProperty(index, "value", dialog.value)
+                                dataList.setProperty(index, "timestamp", (dialog.nowDate + " " + dialog.nowTime))
+
+                                logger.addData(dataTable, key, dialog.value, dialog.nowDate + " " + dialog.nowTime)
+                            })
+                        }
+                    }
+
                     MenuItem
                     {
                         text: "Remove"

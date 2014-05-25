@@ -9,14 +9,26 @@ Dialog
 
     property string parameterName: "value"
     property string parameterDescription: "value"
+    property string pageTitle: "value"  /* Add or Edit*/
     property string value: "value"
-    property string nowDate: "2014-01-01"
-    property string nowTime: "00:00:00"
+    property string nowDate: "value"
+    property string nowTime: "value"
 
     Component.onCompleted:
     {
-        var tmp = new Date()
-        updateDateTime(Qt.formatDateTime(tmp, "yyyy-MM-dd"), Qt.formatDateTime(tmp, "hh:mm:ss"))
+        /* Check are we adding new, or editing existing one */
+        if (nowDate == "value" && nowTime == "value" && value == "value")
+        {
+            var tmp = new Date()
+            updateDateTime(Qt.formatDateTime(tmp, "yyyy-MM-dd"), Qt.formatDateTime(tmp, "hh:mm:ss"))
+            pageTitle = "Add"
+        }
+        else
+        {
+            updateDateTime(nowDate, nowTime)
+            valueField.text = value
+            pageTitle = "Edit"
+        }
     }
 
     function updateDateTime (newDate, newTime)
@@ -42,8 +54,8 @@ Dialog
     DialogHeader
     {
         id: pageHeader
-        title: "Add new value"
-        acceptText: "Add"
+        title: pageTitle + " value"
+        acceptText: pageTitle
         cancelText: "Cancel"
     }
 

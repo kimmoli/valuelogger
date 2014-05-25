@@ -24,12 +24,6 @@ Page
 
         contentHeight: column.height
 
-
-        ListModel
-        {
-            id: dataList
-        }
-
         Column
         {
             id: column
@@ -55,12 +49,14 @@ Page
                         console.log("dialog accepted")
                         console.log(dialog.parameterName)
                         console.log(dialog.parameterDescription)
+                        console.log(dialog.plotColor)
 
-                        var datatable = logger.addParameterEntry(dialog.parameterName, dialog.parameterDescription, true)
+                        var datatable = logger.addParameterEntry(dialog.parameterName, dialog.parameterDescription, true, dialog.plotColor)
 
                         parameterList.append({"parName": dialog.parameterName,
                                                  "parDescription": dialog.parameterDescription,
                                                  "visualize": true,
+                                                 "plotcolor": dialog.plotColor,
                                                  "dataTable": datatable})
 
                     } )
@@ -131,6 +127,13 @@ Page
                         }
                     }
 
+                    Rectangle
+                    {
+                        width: 50
+                        height: 50
+                        color: plotcolor
+                    }
+
                     IconButton
                     {
                         id: addValueButton
@@ -151,7 +154,7 @@ Page
                                 console.log(" date is " + dialog.nowDate)
                                 console.log(" time is " + dialog.nowTime)
 
-                                logger.addData(dataTable, dialog.value, dialog.nowDate + " " + dialog.nowTime)
+                                logger.addData(dataTable, "", dialog.value, dialog.nowDate + " " + dialog.nowTime)
                             })
                         }
                     }
@@ -174,9 +177,13 @@ Page
                                 for (var i=0 ; i<tmp.length; i++)
                                 {
                                     console.log(i + " = " + tmp[i]["timestamp"] + " = " + tmp[i]["value"])
-                                    dataList.append( {"value": tmp[i]["value"], "timestamp": tmp[i]["timestamp"]} )
+                                    dataList.append( {"key":tmp[i]["key"], "value": tmp[i]["value"], "timestamp": tmp[i]["timestamp"]} )
                                 }
-                                pageStack.push(Qt.resolvedUrl("ShowData.qml"), { "parName": parName, "dataList": dataList, "dataTable": dataTable} );
+                                pageStack.push(Qt.resolvedUrl("ShowData.qml"),
+                                               { "parName": parName,
+                                                 "parDescription": parDescription,
+                                                 "dataList": dataList,
+                                                 "dataTable": dataTable} );
                             }
                         }
 
@@ -187,15 +194,18 @@ Page
                         }
                     }
                 }
+                ListModel
+                {
+                    id: dataList
+                }
+
             }
-
-
         }
 
 
         Button
         {
-            text: "Visualize"
+            text: "Plot selected"
             enabled: parameterList.count > 0
 
             onClicked:
@@ -203,21 +213,22 @@ Page
                 console.log("there is " + parameterList.count + " items in list.")
 
                 var l = []
-                parNames.clear()
+                parInfo.clear()
 
                 for (var a=0; a<parameterList.count; a++)
                 {
                     if (parameterList.get(a).visualize)
                     {
                         console.log("showing data from " + parameterList.get(a).parName)
-                        parNames.append({"name": parameterList.get(a).parName})
+                        parInfo.append({"name": parameterList.get(a).parName,
+                                       "plotcolor": parameterList.get(a).plotcolor})
                         l.push(logger.readData(parameterList.get(a).dataTable))
                     }
                 }
 
                 if (l.length > 0 && l.length < 10)
                 {
-                    pageStack.push(Qt.resolvedUrl("DrawData.qml"), {"dataList": l, "parNames": parNames})
+                    pageStack.push(Qt.resolvedUrl("DrawData.qml"), {"dataList": l, "parInfo": parInfo})
                 }
                 else
                     console.log("ERROR: None or too many plots selected")
@@ -228,9 +239,8 @@ Page
 
             ListModel
             {
-                id: parNames
+                id: parInfo
             }
-
         }
     }
 
