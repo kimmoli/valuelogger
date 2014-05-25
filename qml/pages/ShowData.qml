@@ -12,6 +12,11 @@ Page
     property string parDescription : "Description goes here"
     property string dataTable : "Data table name here"
 
+    function test(s)
+    {
+        console.log("test " +s)
+    }
+
     PageHeader
     {
         id: pageHeader
@@ -47,6 +52,29 @@ Page
                 }, 2500 )
             }
 
+            function editData()
+            {
+                var editDialog = pageStack.push(Qt.resolvedUrl("AddValue.qml"),
+                                            {"parameterName": parName,
+                                             "parameterDescription": parDescription,
+                                             "value": value,
+                                             "nowDate": Qt.formatDateTime(new Date(timestamp), "yyyy-MM-dd"),
+                                             "nowTime": Qt.formatDateTime(new Date(timestamp), "hh:mm:ss")})
+
+                editDialog.accepted.connect( function()
+                {
+                    console.log("dialog accepted")
+                    console.log(" value is " + editDialog.value)
+                    console.log(" date is " + editDialog.nowDate)
+                    console.log(" time is " + editDialog.nowTime)
+
+                    dataListView.model.setProperty(index, "value", editDialog.value)
+                    dataListView.model.setProperty(index, "timestamp", (editDialog.nowDate + " " + editDialog.nowTime))
+
+                    logger.addData(dataTable, key, editDialog.value, (editDialog.nowDate + " " + editDialog.nowTime))
+                })
+            }
+
             Row
             {
                 anchors.verticalCenter: parent.verticalCenter
@@ -78,34 +106,13 @@ Page
                     MenuItem
                     {
                         text: "Edit"
-                        onClicked:
-                        {
-                            var dialog = pageStack.push(Qt.resolvedUrl("AddValue.qml"),
-                                                        {"parameterName": parName,
-                                                         "parameterDescription": parDescription,
-                                                         "value": value,
-                                                         "nowDate": Qt.formatDateTime(new Date(timestamp), "yyyy-MM-dd"),
-                                                         "nowTime": Qt.formatDateTime(new Date(timestamp), "hh:mm:ss")})
-
-                            dialog.accepted.connect(function()
-                            {
-                                console.log("dialog accepted")
-                                console.log(" value is " + dialog.value)
-                                console.log(" date is " + dialog.nowDate)
-                                console.log(" time is " + dialog.nowTime)
-
-                                dataList.setProperty(index, "value", dialog.value)
-                                dataList.setProperty(index, "timestamp", (dialog.nowDate + " " + dialog.nowTime))
-
-                                logger.addData(dataTable, key, dialog.value, dialog.nowDate + " " + dialog.nowTime)
-                            })
-                        }
+                        onClicked: editData();
                     }
 
                     MenuItem
                     {
                         text: "Remove"
-                        onClicked: remove()
+                        onClicked: remove();
                     }
                 }
             }
