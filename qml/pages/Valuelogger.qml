@@ -206,20 +206,20 @@ Page
             onClicked:
             {
                 console.log("there is " + parameterList.count + " items in list.")
-                var a
-                for (a=0; a<parameterList.count; a++)
+
+                var l = []
+
+                for (var a=0; a<parameterList.count; a++)
                 {
                     if (parameterList.get(a).visualize)
+                    {
                         console.log("showing data from " + parameterList.get(a).parName)
-                }
-                var l = logger.readData(parameterList.get(0).dataTable)
-
-                for (var i=0 ; i<l.length; i++)
-                {
-                    console.log("timestamp " +  l[i]["timestamp"] + " value " + l[i]["value"])
+                        l.push(logger.readData(parameterList.get(a).dataTable))
+                    }
                 }
 
-                pageStack.push(Qt.resolvedUrl("DrawData.qml"), {"dataList": l})
+                if (l.length > 0)
+                    pageStack.push(Qt.resolvedUrl("DrawData.qml"), {"dataList": l})
             }
             anchors.top: parameters.bottom
             anchors.horizontalCenter: parent.horizontalCenter

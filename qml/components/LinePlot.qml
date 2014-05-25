@@ -14,19 +14,37 @@ Rectangle
     property int min : 0
     property int max : 1
 
-    function getMinMax()
+    property date xstart : new Date()
+    property date xend : new Date()
+
+    property var plotColors: [ "white", "yellow", "green" ]
+
+    function getMinMax(data)
     {
-        var last = dataListModel.length - 1;
+        var last = data.length - 1;
         var first = 0;
-        xStart.text = Qt.formatDateTime(dataListModel[last]["timestamp"], "hh:mm:ss")
-        xEnd.text = Qt.formatDateTime(dataListModel[0]["timestamp"], "hh:mm:ss")
+
+        console.log("Found " + data.legth + " records")
+
+        var s = new Date(data[0]["timestamp"])
+
+        if (s.getTime() < xstart.getTime())
+            xstart = s
+
+        s = new Date(data[data.length-1]["timestamp"])
+
+        if (s.getTime() > xend.getTime())
+            xend = s
+
+        xStart.text = Qt.formatDateTime(xend, "dd.MM.yyyy hh:mm")
+        xEnd.text = Qt.formatDateTime(xstart, "dd.MM.yyyy hh:mm")
 
         first = 0;
-        last = dataListModel.length - 1;
+        last = data.length - 1;
 
         for (var i = first; i <= last; i++)
         {
-            var l = dataListModel[i]
+            var l = data[i]
 
             if (l[column] > max)
                 max = l[column];
@@ -43,7 +61,7 @@ Rectangle
     function update()
     {
 
-        getMinMax()
+//        getMinMax(dataListModel)
 
         canvas.requestPaint();
     }
@@ -159,7 +177,7 @@ Rectangle
             ctx.restore();
         }
 
-        function drawPlot(ctx, data, color, column, ymin, ymax)
+        function drawPlot(ctx, data, color, column)
         {
             ctx.save();
             ctx.globalAlpha = 1.0;
@@ -167,16 +185,11 @@ Rectangle
             ctx.lineWidth = 2;
             ctx.beginPath();
 
-            var s = new Date(data[0]["timestamp"])
-            var xstart = s.getTime() // convert to epoch TimePicker
-            s = new Date(data[data.length-1]["timestamp"])
-            var xend = s.getTime()
-
             for (var i = 0; i < data.length; i++)
             {
                 s = new Date(data[i]["timestamp"])
                 var x = (s.getTime() - xstart)/(xend-xstart);
-                var y = (data[i][column]-ymin)/(ymax-ymin);
+                var y = (data[i][column]-min)/(max-min);
 
                 if (i == 0)
                 {
@@ -195,6 +208,7 @@ Rectangle
 
         onPaint:
         {
+            console.log("onPaint")
             var ctx = canvas.getContext("2d");
 
             ctx.globalCompositeOperation = "source-over";
@@ -208,9 +222,14 @@ Rectangle
                 return;
             }
 
-            getMinMax()
+            for (var n=0; n<dataListModel.length; n++)
+                getMinMax(dataListModel[n])
 
-            drawPlot(ctx, dataListModel, "white", column, min, max);
+            console.log("min " + min + " max " + max)
+            console.log("start " + Qt.formatDateTime(xstart, "dd.MM.yyyy hh:mm") + " end " + Qt.formatDateTime(xend, "dd.MM.yyyy hh:mm"))
+
+            for (n=0; n<dataListModel.length; n++)
+                drawPlot(ctx, dataListModel[n], plotColors[n], column);
         }
     }
 }

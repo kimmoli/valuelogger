@@ -15,9 +15,8 @@ Page
         dataListModel: dataList
         id: plot
         width: parent.width - 2*Theme.paddingLarge
-        height: 400
-        x: Theme.paddingLarge
+        height: parent.height - 2*Theme.paddingLarge
+        anchors.centerIn: parent
     }
-
 }
 
