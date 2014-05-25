@@ -9,6 +9,10 @@ ApplicationWindow
 {
     id: valuelogger
 
+    property var plotColors:[ "#ffffff", "#ff0080", "#ff8000", "#ffff00", "#00ff00",
+                              "#00ff80", "#00ffff", "#0000ff", "#8000ff", "#ff00ff" ]
+
+
     initialPage: Qt.resolvedUrl("pages/Valuelogger.qml") //Component { Valuelogger { } }
 
     cover: Qt.resolvedUrl("cover/CoverPage.qml")

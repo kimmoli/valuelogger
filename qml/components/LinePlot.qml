@@ -21,10 +21,6 @@ Rectangle
     property date xstart : new Date()
     property date xend : new Date()
 
-    property var plotColors:[ "#ffffff", "#ff0080", "#ff8000", "#ffff00", "#00ff00",
-                              "#00ff80", "#00ffff", "#0000ff", "#8000ff", "#ff00ff" ]
-
-
     function getMinMax(data)
     {
         var last = data.length - 1;

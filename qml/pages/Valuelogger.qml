@@ -170,7 +170,6 @@ Page
                                 var tmp = logger.readData(dataTable)
 
                                 dataList.clear()
-                                parNamesModel.clear()
 
                                 for (var i=0 ; i<tmp.length; i++)
                                 {
