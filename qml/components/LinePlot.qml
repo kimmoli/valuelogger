@@ -17,7 +17,9 @@ Rectangle
     property date xstart : new Date()
     property date xend : new Date()
 
-    property var plotColors: [ "white", "yellow", "green" ]
+    property var plotColors:[ "#ffffff", "#ff0080", "#ff8000", "#ffff00", "#00ff00",
+                              "#00ff80", "#00ffff", "#0000ff", "#8000ff", "#ff00ff" ]
+
 
     function getMinMax(data)
     {
@@ -186,7 +188,7 @@ Rectangle
             ctx.save();
             ctx.globalAlpha = 1.0;
             ctx.strokeStyle = color;
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 3;
             ctx.beginPath();
 
             for (var i = 0; i < data.length; i++)

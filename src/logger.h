@@ -36,6 +36,7 @@ public:
     Q_INVOKABLE QVariantList readParameters();
     Q_INVOKABLE QVariantList readData(QString table);
     Q_INVOKABLE void addData(QString table, QString value, QString timestamp);
+    Q_INVOKABLE void deleteData(QString table, QString timestamp);
 
     void dropDataTable(QString table);
 

@@ -1,10 +1,9 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import valuelogger.Logger 1.0
 
 Page
 {
-    id: page
+    id: mainPage
 
     SilicaFlickable
     {
@@ -25,10 +24,6 @@ Page
 
         contentHeight: column.height
 
-        ListModel
-        {
-            id: parameterList
-        }
 
         ListModel
         {
@@ -39,7 +34,7 @@ Page
         {
             id: column
 
-            width: page.width
+            width: mainPage.width
             spacing: Theme.paddingLarge
 
             PageHeader
@@ -103,7 +98,6 @@ Page
                         parameters.model.remove(index)
                     })
                 }
-
 
                 Row
                 {
@@ -182,7 +176,7 @@ Page
                                     console.log(i + " = " + tmp[i]["timestamp"] + " = " + tmp[i]["value"])
                                     dataList.append( {"value": tmp[i]["value"], "timestamp": tmp[i]["timestamp"]} )
                                 }
-                                pageStack.push(Qt.resolvedUrl("ShowData.qml"), { "parName": parName, "dataList": dataList } );
+                                pageStack.push(Qt.resolvedUrl("ShowData.qml"), { "parName": parName, "dataList": dataList, "dataTable": dataTable} );
                             }
                         }
 
@@ -197,6 +191,7 @@ Page
 
 
         }
+
 
         Button
         {
@@ -218,33 +213,19 @@ Page
                     }
                 }
 
-                if (l.length > 0)
+                if (l.length > 0 && l.length < 10)
+                {
                     pageStack.push(Qt.resolvedUrl("DrawData.qml"), {"dataList": l})
+                }
+                else
+                    console.log("ERROR: None or too many plots selected")
+
             }
             anchors.top: parameters.bottom
             anchors.horizontalCenter: parent.horizontalCenter
         }
     }
 
-    Logger
-    {
-        id: logger
-
-        Component.onCompleted:
-        {
-            var tmp = logger.readParameters()
-
-            for (var i=0 ; i<tmp.length; i++)
-            {
-                console.log(i + " = " + tmp[i]["name"] + " is " + (tmp[i]["visualize"] == 1 ? true : false))
-
-                parameterList.append({"parName": tmp[i]["name"],
-                                         "parDescription": tmp[i]["description"],
-                                         "dataTable": tmp[i]["datatable"],
-                                         "visualize": (tmp[i]["visualize"] == 1 ? true : false) })
-            }
-        }
-    }
 }
 
 

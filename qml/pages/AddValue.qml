@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
 
 Dialog
 {
-    id: page
+    id: addValuePage
 
     canAccept: false
 
@@ -51,7 +51,7 @@ Dialog
     {
         id: col
         spacing: Theme.paddingSmall
-        width: page.width
+        width: addValuePage.width
         anchors.top: pageHeader.bottom
 
         Label
@@ -158,11 +158,11 @@ Dialog
             font.pixelSize: Theme.fontSizeExtraLarge
             color: Theme.primaryColor
             placeholderText: "Enter new value here"
-            onTextChanged: page.canAccept = text.length > 0
+            onTextChanged: addValuePage.canAccept = text.length > 0
             inputMethodHints: Qt.ImhDigitsOnly
             EnterKey.enabled: text.length > 0
             EnterKey.iconSource: "image://theme/icon-m-enter-accept"
-            EnterKey.onClicked: page.accept()
+            EnterKey.onClicked: addValuePage.accept()
         }
 
     }

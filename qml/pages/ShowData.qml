@@ -5,10 +5,11 @@ import Sailfish.Silica 1.0
 Page
 {
 
-    id: page
+    id: showDataPage
 
     property var dataList : []
     property string parName : "Name goes here"
+    property string dataTable : "kukkuu"
 
     PageHeader
     {
@@ -18,6 +19,8 @@ Page
 
     ListView
     {
+        id: dataListView
+
         model: dataList
 
         width: parent.width
@@ -27,7 +30,21 @@ Page
 
         delegate: ListItem
         {
+            id: dataItem
             contentHeight: Theme.itemSizeSmall
+            menu: contextMenu
+
+            ListView.onRemove: animateRemoval(dataItem)
+
+            function remove()
+            {
+                console.log("Deleting...")
+                remorseAction("Deleting", function()
+                {
+                    logger.deleteData(dataTable, timestamp)
+                    dataListView.model.remove(index)
+                }, 2500 )
+            }
 
             Row
             {
@@ -51,6 +68,20 @@ Page
                     font.pixelSize: Theme.fontSizeExtraLarge
                 }
             }
+
+            Component
+            {
+                id: contextMenu
+                ContextMenu
+                {
+                    MenuItem
+                    {
+                        text: "Remove"
+                        onClicked: remove()
+                    }
+                }
+            }
+
         }
     }
 }

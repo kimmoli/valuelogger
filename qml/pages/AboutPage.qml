@@ -13,7 +13,7 @@ Page
     property string version
     property string imagelocation
 
-    id: page
+    id: aboutPage
 
     SilicaFlickable
     {
@@ -25,7 +25,7 @@ Page
         {
             id: column
 
-            width: page.width
+            width: aboutPage.width
             spacing: Theme.paddingLarge
             PageHeader
             {

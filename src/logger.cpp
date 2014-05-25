@@ -68,6 +68,11 @@ void Logger::readInitParams()
     emit varChanged();
 }
 
+/*
+ * Create table for data storage, each parameter has its own table
+ * table name is prefixed with _ to allow number-starting tables
+ */
+
 void Logger::createDataTable(QString table)
 {
     QSqlQuery query;
@@ -81,6 +86,10 @@ void Logger::createDataTable(QString table)
         qDebug() << "datatable not created _" << table << " : " << query.lastError();
     }
 }
+
+/*
+ * When parameter is deleted, we need also to drop the datatable connected to it
+ */
 
 void Logger::dropDataTable(QString table)
 {
@@ -96,6 +105,10 @@ void Logger::dropDataTable(QString table)
     }
 }
 
+/*
+ * Paramtere table collects parameters to which under data is being logged
+ */
+
 void Logger::createParameterTable()
 {
     QSqlQuery query;
@@ -109,6 +122,10 @@ void Logger::createParameterTable()
         qDebug() << "parameter table not created : " << query.lastError();
     }
 }
+
+/*
+ * Add new data entry to a parameter
+ */
 
 void Logger::addData(QString table, QString value, QString timestamp)
 {
@@ -127,6 +144,10 @@ void Logger::addData(QString table, QString value, QString timestamp)
         qDebug() << "failed " << timestamp << " = " << value << " : " << query.lastError();
     }
 }
+
+/*
+ * Get all data of one parameter, to raw data show page or for plotting
+ */
 
 QVariantList Logger::readData(QString table)
 {
@@ -152,6 +173,27 @@ QVariantList Logger::readData(QString table)
 
     return tmp;
 }
+
+/*
+ * Delete one data entry of a parameter
+ */
+
+void Logger::deleteData(QString table, QString timestamp)
+{
+    QSqlQuery query = QSqlQuery("DELETE FROM _" + table + " WHERE timestamp = ?", *db);
+
+    query.addBindValue(timestamp);
+
+    if (query.exec())
+        qDebug() << "Data logged at " << timestamp << " deleted";
+    else
+        qDebug() << "deleting data failed: " << table << " " << timestamp << " : " << query.lastError();
+
+}
+
+/*
+ * Read all parameters (to be shown on mainpage listview
+ */
 
 QVariantList Logger::readParameters()
 {
@@ -179,7 +221,11 @@ QVariantList Logger::readParameters()
     return tmp;
 }
 
-
+/*
+ * Add created parameter entry to parameter table
+ *
+ * datatable is md5 is parameter name
+ */
 
 QString Logger::addParameterEntry(QString parameterName, QString parameterDescription, bool visualize)
 {
@@ -210,10 +256,16 @@ QString Logger::addParameterEntry(QString parameterName, QString parameterDescri
     return objHash;
 }
 
+/*
+ * Delete one parameter, deletes also associated datatable
+ */
+
 void Logger::deleteParameterEntry(QString parameterName, QString datatable)
 {
     QSqlQuery query = QSqlQuery("DELETE FROM parameters WHERE parameter = ?", *db);
+
     query.addBindValue(parameterName);
+
     if (query.exec())
         qDebug() << "Parameter " << parameterName << " deleted";
     else

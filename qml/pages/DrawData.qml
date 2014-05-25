@@ -5,7 +5,7 @@ import "../components"
 
 Page
 {
-    id: page
+    id: drawDataPage
     property var dataList : []
 
     allowedOrientations: Orientation.Portrait | Orientation.Landscape

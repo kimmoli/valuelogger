@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
 
 Dialog
 {
-    id: page
+    id: newParamaterPage
 
     canAccept: false
 
@@ -32,7 +32,7 @@ Dialog
     {
         id: col
         spacing: Theme.paddingLarge
-        width: page.width
+        width: newParamaterPage.width
         anchors.top: pageHeader.bottom
 
         TextField
@@ -42,7 +42,7 @@ Dialog
             width: parent.width
             label: "Parameter name"
             placeholderText: "Enter parameter name here"
-            onTextChanged: page.canAccept = text.length > 0
+            onTextChanged: newParamaterPage.canAccept = text.length > 0
             EnterKey.enabled: text.length > 0
             EnterKey.iconSource: "image://theme/icon-m-enter-next"
             EnterKey.onClicked: parDescField.focus = true
