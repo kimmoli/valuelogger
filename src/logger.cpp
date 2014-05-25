@@ -301,6 +301,8 @@ void Logger::deleteParameterEntry(QString parameterName, QString datatable)
     dropDataTable(datatable);
 }
 
+
+
 void Logger::closeDatabase()
 {
     qDebug() << "Closing db";

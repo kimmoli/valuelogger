@@ -254,6 +254,7 @@ Rectangle
 
         function drawPlot(ctx, data, color, column)
         {
+            console.log("Plotting with color " + color)
             ctx.save();
             ctx.globalAlpha = 1.0;
             ctx.strokeStyle = color;
@@ -297,17 +298,19 @@ Rectangle
                 return;
             }
 
+            // assign some timestamp which is in range as start/end default for further expanding
+            xstart = new Date(dataListModel[0][0]["timestamp"])
+            xend = new Date(dataListModel[0][0]["timestamp"])
+
             for (var n=0; n<dataListModel.length; n++)
                 getMinMax(dataListModel[n])
 
             console.log("min " + min + " max " + max)
             console.log("start " + Qt.formatDateTime(xstart, "dd.MM.yyyy hh:mm") + " end " + Qt.formatDateTime(xend, "dd.MM.yyyy hh:mm"))
 
-            console.log(parInfoModel)
-
             for (n=0; n<dataListModel.length; n++)
             {
-                drawPlot(ctx, dataListModel[n], plotColors[n], column);
+                drawPlot(ctx, dataListModel[n], parInfoModel.get(n).plotcolor, column);
             }
         }
     }

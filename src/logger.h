@@ -39,6 +39,8 @@ public:
     Q_INVOKABLE QString addData(QString table, QString key, QString value, QString timestamp);
     Q_INVOKABLE void deleteData(QString table, QString key);
 
+    Q_INVOKABLE QString colorToString(QColor color) { return color.name(); }
+
     void dropDataTable(QString table);
 
     QString generateHash(QString sometext);

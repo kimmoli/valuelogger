@@ -54,10 +54,10 @@ Page
                         var datatable = logger.addParameterEntry(dialog.parameterName, dialog.parameterDescription, true, dialog.plotColor)
 
                         parameterList.append({"parName": dialog.parameterName,
-                                                 "parDescription": dialog.parameterDescription,
-                                                 "visualize": true,
-                                                 "plotcolor": dialog.plotColor,
-                                                 "dataTable": datatable})
+                                              "parDescription": dialog.parameterDescription,
+                                              "visualize": true,
+                                              "plotcolor": logger.colorToString(dialog.plotColor),
+                                              "dataTable": datatable})
 
                     } )
 
@@ -125,13 +125,6 @@ Page
                             font.pixelSize: Theme.fontSizeSmall
                             color: parameterItem.highlighted ? Theme.highlightColor : Theme.secondaryColor
                         }
-                    }
-
-                    Rectangle
-                    {
-                        width: 50
-                        height: 50
-                        color: plotcolor
                     }
 
                     IconButton
@@ -221,7 +214,7 @@ Page
                     {
                         console.log("showing data from " + parameterList.get(a).parName)
                         parInfo.append({"name": parameterList.get(a).parName,
-                                       "plotcolor": parameterList.get(a).plotcolor})
+                                        "plotcolor": parameterList.get(a).plotcolor})
                         l.push(logger.readData(parameterList.get(a).dataTable))
                     }
                 }
