@@ -1,40 +1,55 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
-Rectangle {
+Rectangle
+{
     id: chart
     width: 400
     height: 300
     color: "transparent"
 
-    property var dataListModel: null  // QVariantList containing QVariantMaps {"date": xyz, "power": 123.4}
+    property var dataListModel: null
     property string column: "value"
 
-    function update() {
+    property int min : 0
+    property int max : 1
+
+    function getMinMax()
+    {
         var last = dataListModel.length - 1;
         var first = 0;
         xStart.text = Qt.formatDateTime(dataListModel[last]["timestamp"], "hh:mm:ss")
         xEnd.text = Qt.formatDateTime(dataListModel[0]["timestamp"], "hh:mm:ss")
 
-        var max = 1;
-        var min = 0;
+        first = 0;
+        last = dataListModel.length - 1;
 
-        for (var i = first; i <= last; i++) {
+        for (var i = first; i <= last; i++)
+        {
             var l = dataListModel[i]
 
             if (l[column] > max)
                 max = l[column];
+
             if (l[column] < min)
                 min = l[column];
         }
 
-        valueMax.text = max.toFixed(2) + " W"
-        valueMin.text = min.toFixed(2) + " W"
-        valueMiddle.text = ((max+min) / 2.).toFixed(2) + " W"
+        valueMax.text = max.toFixed(2)
+        valueMin.text = min.toFixed(2)
+        valueMiddle.text = ((max+min) / 2.).toFixed(2)
+    }
+
+    function update()
+    {
+
+        getMinMax()
+
         canvas.requestPaint();
     }
 
-    Text {
+    Text
+    {
         id: xStart
         color: Theme.primaryColor
         font.pointSize: 10
@@ -45,7 +60,8 @@ Rectangle {
         text: ""
     }
 
-    Text {
+    Text
+    {
         id: xEnd
         color: Theme.primaryColor
         font.pointSize: 10
@@ -57,7 +73,8 @@ Rectangle {
         text: ""
     }
 
-    Text {
+    Text
+    {
         id: valueMax
         color: Theme.primaryColor
         width: 50
@@ -69,7 +86,8 @@ Rectangle {
         text: "1.00 W"
     }
 
-    Text {
+    Text
+    {
         id: valueMin
         color: Theme.primaryColor
         width: 50
@@ -81,7 +99,8 @@ Rectangle {
         text: "0.00 W"
     }
 
-    Text {
+    Text
+    {
         id: valueMiddle
         color: Theme.primaryColor
         width: 50
@@ -95,7 +114,8 @@ Rectangle {
     }
 
 
-    Canvas {
+    Canvas
+    {
         id: canvas
         width: parent.width
         anchors.top: valueMax.bottom
@@ -106,15 +126,16 @@ Rectangle {
         property int first: 0
         property int last: 0
 
-        function drawBackground(ctx) {
+        function drawBackground(ctx)
+        {
             ctx.save();
 
             // clear previous plot
             ctx.clearRect(0,0,canvas.width, canvas.height);
 
             // fill translucent background
-            ctx.fillStyle = Qt.rgba(0,0,0,0.5);
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // ctx.fillStyle = Qt.rgba(0,0,0,0.5);
+            // ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // draw grid lines
             ctx.strokeStyle = Qt.rgba(1,1,1,0.3);
@@ -123,11 +144,13 @@ Rectangle {
             var cols = 6.0;
             var rows = 5.0;
 
-            for (var i = 0; i < rows; i++) {
+            for (var i = 0; i < rows; i++)
+            {
                 ctx.moveTo(0, i * (canvas.height/rows));
                 ctx.lineTo(canvas.width, i * (canvas.height/rows));
             }
-            for (i = 0; i < cols; i++) {
+            for (i = 0; i < cols; i++)
+            {
                 ctx.moveTo(i * (canvas.width/cols), 0);
                 ctx.lineTo(i * (canvas.width/cols), canvas.height);
             }
@@ -141,7 +164,7 @@ Rectangle {
             ctx.save();
             ctx.globalAlpha = 1.0;
             ctx.strokeStyle = color;
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 2;
             ctx.beginPath();
 
             var s = new Date(data[0]["timestamp"])
@@ -155,9 +178,12 @@ Rectangle {
                 var x = (s.getTime() - xstart)/(xend-xstart);
                 var y = (data[i][column]-ymin)/(ymax-ymin);
 
-                if (i == 0) {
+                if (i == 0)
+                {
                     ctx.moveTo(x * canvas.width, (1-y) * canvas.height);
-                } else {
+                }
+                else
+                {
                     ctx.lineTo(x * canvas.width, (1-y) * canvas.height);
                 }
             }
@@ -167,34 +193,24 @@ Rectangle {
 
         onCanvasSizeChanged: requestPaint();
 
-        onPaint: {
+        onPaint:
+        {
             var ctx = canvas.getContext("2d");
 
             ctx.globalCompositeOperation = "source-over";
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 2;
 
             drawBackground(ctx);
 
-            if (!dataListModel) {
+            if (!dataListModel)
+            {
                 console.log("not ready")
                 return;
             }
 
-            first = 0;
-            last = dataListModel.length - 1;
-            var max = 1;
-            var min = 0;
+            getMinMax()
 
-            for (var i = first; i <= last; i++) {
-                var l = dataListModel[i]
-
-                if (l[column] > max)
-                    max = l[column];
-                if (l[column] < min)
-                    min = l[column];
-            }
-
-            drawPlot(ctx, dataListModel, Qt.rgba(0.8, 0.0, 0.0, 1), column, min, max);
+            drawPlot(ctx, dataListModel, "white", column, min, max);
         }
     }
 }
