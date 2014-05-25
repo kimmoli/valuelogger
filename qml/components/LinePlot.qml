@@ -4,8 +4,8 @@ import Sailfish.Silica 1.0
 Rectangle
 {
     id: chart
-    width: 400
-    height: 300
+    width: parent.width
+    height: parent.height
     color: "transparent"
 
     property var dataListModel: null
@@ -23,8 +23,6 @@ Rectangle
     {
         var last = data.length - 1;
         var first = 0;
-
-        console.log("Found " + data.legth + " records")
 
         var s = new Date(data[0]["timestamp"])
 
@@ -55,7 +53,8 @@ Rectangle
 
         valueMax.text = max.toFixed(2)
         valueMin.text = min.toFixed(2)
-        valueMiddle.text = ((max+min) / 2.).toFixed(2)
+        for (var midIndex=0; midIndex<4; midIndex++)
+            valueMiddle.itemAt(midIndex).text = (((max+min) / 5.)*(midIndex+1)).toFixed(2)
     }
 
     function update()
@@ -70,25 +69,25 @@ Rectangle
     {
         id: xStart
         color: Theme.primaryColor
-        font.pointSize: 10
+        font.pointSize: 12
         wrapMode: Text.WordWrap
         anchors.right: parent.right
         anchors.rightMargin: 0
         anchors.top: parent.top
-        text: ""
+        text: "unk"
     }
 
     Text
     {
         id: xEnd
         color: Theme.primaryColor
-        font.pointSize: 10
+        font.pointSize: 12
         wrapMode: Text.WordWrap
         anchors.left: parent.left
         anchors.leftMargin: 0
         anchors.top: parent.top
         horizontalAlignment: Text.AlignRight
-        text: ""
+        text: "unk"
     }
 
     Text
@@ -96,12 +95,12 @@ Rectangle
         id: valueMax
         color: Theme.primaryColor
         width: 50
-        font.pointSize: 10
+        font.pointSize: 12
         wrapMode: Text.WordWrap
         anchors.left: parent.left
         anchors.leftMargin: 0
         anchors.top: xEnd.bottom
-        text: "1.00 W"
+        text: "unk"
     }
 
     Text
@@ -109,28 +108,33 @@ Rectangle
         id: valueMin
         color: Theme.primaryColor
         width: 50
-        font.pointSize: 10
+        font.pointSize: 12
         wrapMode: Text.WordWrap
         anchors.left: parent.left
         anchors.leftMargin: 0
         anchors.bottom: parent.bottom
-        text: "0.00 W"
+        text: "unk"
     }
 
-    Text
+    Repeater
     {
         id: valueMiddle
-        color: Theme.primaryColor
-        width: 50
-        font.pointSize: 10
-        wrapMode: Text.WordWrap
-        anchors.left: parent.left
-        anchors.leftMargin: 0
-        anchors.verticalCenter: canvas.verticalCenter
-        text: "0.50 W"
-        z: 10
-    }
+        model:4
 
+        Text
+        {
+            color: Theme.primaryColor
+            width: 50
+            font.pointSize: 12
+            wrapMode: Text.WordWrap
+            anchors.left: parent.left
+            anchors.leftMargin: 0
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: (index+1) * ((parent.height/5) - 12 )
+            text: "unk"
+            z: 10
+        }
+    }
 
     Canvas
     {
@@ -187,7 +191,7 @@ Rectangle
 
             for (var i = 0; i < data.length; i++)
             {
-                s = new Date(data[i]["timestamp"])
+                var s = new Date(data[i]["timestamp"])
                 var x = (s.getTime() - xstart)/(xend-xstart);
                 var y = (data[i][column]-min)/(max-min);
 
