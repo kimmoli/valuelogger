@@ -9,7 +9,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 
 #include "logger.h"
-#include <QSettings>
+
 #include <QCoreApplication>
 #include <QCryptographicHash>
 #include <QtSql>
@@ -43,21 +43,14 @@ Logger::Logger(QObject *parent) :
     if (db->open())
     {
         qDebug() << "Open Success";
-//        dbOpened();
     }
     else
     {
         qDebug() << "Open error";
         qDebug() << " " << db->lastError().text();
-//        dbOpenError();
     }
 
     createParameterTable();
-
-    /* Read settings */
-
-    m_var = "";
-    emit versionChanged();
 }
 
 QString Logger::readVersion()
@@ -65,13 +58,6 @@ QString Logger::readVersion()
     return APPVERSION;
 }
 
-void Logger::readInitParams()
-{
-    QSettings settings;
-    m_var = settings.value("var", "").toString();
-
-    emit varChanged();
-}
 
 /*
  * Create table for data storage, each parameter has its own table
@@ -321,22 +307,5 @@ Logger::~Logger()
         db = 0;
     }
 }
-
-
-QString Logger::readVar()
-{
-    return m_var;
-}
-
-void Logger::writeVar(QString s)
-{
-    m_var = s;
-
-    QSettings settings;
-    settings.setValue("var", m_var);
-
-    emit varChanged();
-}
-
 
 

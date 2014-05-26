@@ -18,19 +18,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 class Logger : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString variable READ readVar WRITE writeVar(QString) NOTIFY varChanged())
     Q_PROPERTY(QString version READ readVersion NOTIFY versionChanged())
 
 public:
     explicit Logger(QObject *parent = 0);
     ~Logger();
 
-    QString readVar();
     QString readVersion();
-
-    void writeVar(QString);
-
-    Q_INVOKABLE void readInitParams();
 
     Q_INVOKABLE QString addParameterEntry(QString key, QString parameterName, QString parameterDescription, bool visualize, QColor plotColor);
     Q_INVOKABLE void deleteParameterEntry(QString parameterName, QString datatable);
@@ -52,15 +46,12 @@ public:
     static const QString DB_NAME;
 
 signals:
-    void varChanged();
     void versionChanged();
 
 private:
-    QString m_var;
     QSqlDatabase* db;
 
 };
 
 
 #endif // LOGGER_H
-

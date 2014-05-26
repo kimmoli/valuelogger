@@ -26,18 +26,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setOrganizationDomain("KimmoLi");
-    QCoreApplication::setOrganizationName("KimmoLi");
-    QCoreApplication::setApplicationName("valuelogger");
-    QCoreApplication::setApplicationVersion("0.1-1");
-
-    qmlRegisterType<Logger>("valuelogger.Logger", 1, 0, "Logger");
+    qmlRegisterType<Logger>("harbour.valuelogger.Logger", 1, 0, "Logger");
 
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
 
     QTranslator translator;
-    translator.load("translations_" + QLocale::system().name(),
-                    "/usr/share/valuelogger/i18n");
+    translator.load("translations_" + QLocale::system().name(), "/usr/share/harbour-valuelogger/i18n");
     app->installTranslator(&translator);
 
     QScopedPointer<QQuickView> view(SailfishApp::createView());
