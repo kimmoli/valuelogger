@@ -47,7 +47,7 @@ Dialog
     {
         if (result === DialogResult.Accepted)
         {
-            value = valueField.text
+            value = valueField.text.replace(",",".")
         }
     }
 
