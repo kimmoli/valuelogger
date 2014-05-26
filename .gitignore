@@ -1,1 +1,2 @@
-*.user 
+*.pro.user 
+i18n/*.qm 
