@@ -34,6 +34,12 @@ int main(int argc, char *argv[])
     qmlRegisterType<Logger>("valuelogger.Logger", 1, 0, "Logger");
 
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
+
+    QTranslator translator;
+    translator.load("translations_" + QLocale::system().name(),
+                    "/usr/share/valuelogger/i18n");
+    app->installTranslator(&translator);
+
     QScopedPointer<QQuickView> view(SailfishApp::createView());
     view->setSource(SailfishApp::pathTo("qml/valuelogger.qml"));
     view->show();
