@@ -41,6 +41,7 @@ ApplicationWindow
     ListModel
     {
         id: parameterList
+
     }
 
 

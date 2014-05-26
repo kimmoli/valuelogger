@@ -10,6 +10,7 @@ Dialog
     property string parameterName: ""
     property string parameterDescription: ""
     property color plotColor: plotColors[0]
+    property string pageTitle: "Add"
 
     onDone:
     {
@@ -26,8 +27,8 @@ Dialog
     DialogHeader
     {
         id: pageHeader
-        title: "Add new parameter"
-        acceptText: "Add"
+        title: pageTitle + " parameter"
+        acceptText: pageTitle
         cancelText: "Cancel"
     }
 

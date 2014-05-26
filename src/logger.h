@@ -32,7 +32,7 @@ public:
 
     Q_INVOKABLE void readInitParams();
 
-    Q_INVOKABLE QString addParameterEntry(QString parameterName, QString parameterDescription, bool visualize, QColor plotColor);
+    Q_INVOKABLE QString addParameterEntry(QString key, QString parameterName, QString parameterDescription, bool visualize, QColor plotColor);
     Q_INVOKABLE void deleteParameterEntry(QString parameterName, QString datatable);
     Q_INVOKABLE QVariantList readParameters();
     Q_INVOKABLE QVariantList readData(QString table);

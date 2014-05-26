@@ -5,6 +5,27 @@ Page
 {
     id: mainPage
 
+    function addParameter(index, oldParName, oldParDesc, oldPlotColor)
+    {
+        var dialog = pageStack.push(Qt.resolvedUrl("NewParameter.qml"))
+
+        dialog.accepted.connect(function()
+        {
+            console.log("dialog accepted")
+            console.log(dialog.parameterName)
+            console.log(dialog.parameterDescription)
+            console.log(dialog.plotColor)
+
+            var datatable = logger.addParameterEntry("", dialog.parameterName, dialog.parameterDescription, true, dialog.plotColor)
+
+            parameterList.append({"parName": dialog.parameterName,
+                                  "parDescription": dialog.parameterDescription,
+                                  "visualize": true,
+                                  "plotcolor": logger.colorToString(dialog.plotColor),
+                                  "dataTable": datatable})
+        } )
+    }
+
     SilicaFlickable
     {
         anchors.fill: parent
@@ -41,27 +62,7 @@ Page
 
                 text: "Add new parameter"
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClicked:
-                {
-                    var dialog = pageStack.push(Qt.resolvedUrl("NewParameter.qml"))
-                    dialog.accepted.connect(function()
-                    {
-                        console.log("dialog accepted")
-                        console.log(dialog.parameterName)
-                        console.log(dialog.parameterDescription)
-                        console.log(dialog.plotColor)
-
-                        var datatable = logger.addParameterEntry(dialog.parameterName, dialog.parameterDescription, true, dialog.plotColor)
-
-                        parameterList.append({"parName": dialog.parameterName,
-                                              "parDescription": dialog.parameterDescription,
-                                              "visualize": true,
-                                              "plotcolor": logger.colorToString(dialog.plotColor),
-                                              "dataTable": datatable})
-
-                    } )
-
-                }
+                onClicked: addParameter()
             }
         }
 
@@ -93,6 +94,29 @@ Page
                         logger.deleteParameterEntry(parName, dataTable)
                         parameters.model.remove(index)
                     })
+                }
+
+                function editParameter()
+                {
+                    var dialog = pageStack.push(Qt.resolvedUrl("NewParameter.qml"),
+                                                {"parameterName": parName,
+                                                    "parameterDescription": parDescription,
+                                                    "plotColor": plotcolor,
+                                                    "pageTitle": "Edit"})
+
+                    dialog.accepted.connect(function()
+                    {
+                        console.log("EDIT dialog accepted")
+                        console.log(dialog.parameterName)
+                        console.log(dialog.parameterDescription)
+                        console.log(dialog.plotColor)
+
+                        logger.addParameterEntry(dataTable, dialog.parameterName, dialog.parameterDescription, true, dialog.plotColor)
+
+                        parameters.model.setProperty(index, "parName", dialog.parameterName)
+                        parameters.model.setProperty(index, "parDescription", dialog.parameterDescription)
+                        parameters.model.setProperty(index, "plotcolor", logger.colorToString(dialog.plotColor))
+                    } )
                 }
 
                 Row
@@ -178,6 +202,12 @@ Page
                                                  "dataList": dataList,
                                                  "dataTable": dataTable} );
                             }
+                        }
+
+                        MenuItem
+                        {
+                            text: "Edit"
+                            onClicked: editParameter()
                         }
 
                         MenuItem

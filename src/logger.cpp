@@ -118,7 +118,7 @@ void Logger::createParameterTable()
 {
     QSqlQuery query;
 
-    if (query.exec("CREATE TABLE IF NOT EXISTS parameters (parameter TEXT PRIMARY KEY, description TEXT, visualize INTEGER, plotcolor TEXT, datatable TEXT)"))
+    if (query.exec("CREATE TABLE IF NOT EXISTS parameters (parameter TEXT, description TEXT, visualize INTEGER, plotcolor TEXT, datatable TEXT PRIMARY KEY)"))
     {
         qDebug() << "parameter table created";
     }
@@ -253,13 +253,11 @@ QString Logger::generateHash(QString sometext)
  * datatable name is md5 of timestamp + random number
  */
 
-QString Logger::addParameterEntry(QString parameterName, QString parameterDescription, bool visualize, QColor plotColor)
+QString Logger::addParameterEntry(QString key, QString parameterName, QString parameterDescription, bool visualize, QColor plotColor)
 {
     qDebug() << "Adding entry: " << parameterName << " - " << parameterDescription << " color " << plotColor;
 
-    QString objHash = generateHash(parameterName);
-
-    qDebug() << "hash" << objHash;
+    QString objHash = ( (key.length() > 0) ? key : generateHash(parameterName));
 
     QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO parameters (parameter,description,visualize,plotcolor,datatable) VALUES (?,?,?,?,?)", *db);
 
@@ -289,9 +287,9 @@ QString Logger::addParameterEntry(QString parameterName, QString parameterDescri
 
 void Logger::deleteParameterEntry(QString parameterName, QString datatable)
 {
-    QSqlQuery query = QSqlQuery("DELETE FROM parameters WHERE parameter = ?", *db);
+    QSqlQuery query = QSqlQuery("DELETE FROM parameters WHERE datatable = ?", *db);
 
-    query.addBindValue(parameterName);
+    query.addBindValue(datatable);
 
     if (query.exec())
         qDebug() << "Parameter " << parameterName << " deleted";
