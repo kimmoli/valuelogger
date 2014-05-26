@@ -39,7 +39,7 @@ Page
                                           { "version": logger.version,
                                               "year": "2014",
                                               "name": "Value Logger",
-                                              "imagelocation": "/usr/share/icons/hicolor/86x86/apps/valuelogger.png"} )
+                                              "imagelocation": "/usr/share/icons/hicolor/86x86/apps/harbour-valuelogger.png"} )
             }
         }
 
