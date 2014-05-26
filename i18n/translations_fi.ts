@@ -2,6 +2,19 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="fi_FI">
 <context>
+    <name>AboutPage</name>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="32"/>
+        <source>About </source>
+        <translation>Tiedot: </translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="70"/>
+        <source>Version: </source>
+        <translation>Versio: </translation>
+    </message>
+</context>
+<context>
     <name>AddValue</name>
     <message>
         <location filename="../qml/pages/AddValue.qml" line="24"/>

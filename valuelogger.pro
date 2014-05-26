@@ -2,7 +2,7 @@
 # Project valuelogger, Value Logger
 #
 
-TARGET = valuelogger
+TARGET = harbour-valuelogger
 
 CONFIG += sailfishapp
 
@@ -15,7 +15,7 @@ message($${DEFINES})
 system(lupdate qml -ts $$PWD/i18n/*.ts)
 system(lrelease $$PWD/i18n/*.ts)
 
-i18n.path = /usr/share/valuelogger/i18n
+i18n.path = /usr/share/harbour-valuelogger/i18n
 i18n.files = i18n/translations_fi.qm
 
 INSTALLS += i18n
@@ -30,8 +30,8 @@ OTHER_FILES += qml/valuelogger.qml \
     qml/pages/Valuelogger.qml \
     qml/pages/AboutPage.qml \
     rpm/valuelogger.spec \
-	valuelogger.png \
-    valuelogger.desktop \
+        harbour-valuelogger.png \
+    harbour-valuelogger.desktop \
     qml/pages/NewParameter.qml \
     qml/pages/AddValue.qml \
     qml/pages/ShowData.qml \
