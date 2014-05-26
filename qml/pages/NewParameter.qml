@@ -10,7 +10,7 @@ Dialog
     property string parameterName: ""
     property string parameterDescription: ""
     property color plotColor: plotColors[0]
-    property string pageTitle: "Add"
+    property string pageTitle: qsTr("Add")
 
     onDone:
     {
@@ -27,9 +27,9 @@ Dialog
     DialogHeader
     {
         id: pageHeader
-        title: pageTitle + " parameter"
+        title: pageTitle + qsTr(" parameter")
         acceptText: pageTitle
-        cancelText: "Cancel"
+        cancelText: qsTr("Cancel")
     }
 
     Column
@@ -44,9 +44,9 @@ Dialog
             id: parNameField
             focus: true
             width: parent.width
-            label: "Parameter name"
+            label: qsTr("Parameter name")
             text: parameterName
-            placeholderText: "Enter parameter name here"
+            placeholderText: qsTr("Enter parameter name here")
             onTextChanged: newParamaterPage.canAccept = text.length > 0
             EnterKey.enabled: text.length > 0
             EnterKey.iconSource: "image://theme/icon-m-enter-next"
@@ -56,16 +56,16 @@ Dialog
         {
             id: parDescField
             width: parent.width
-            label: "Description"
+            label: qsTr("Description")
             text: parameterDescription
-            placeholderText: "Enter short description here"
+            placeholderText: qsTr("Enter short description here")
             EnterKey.enabled: true
             EnterKey.iconSource: "image://theme/icon-m-enter-next"
             EnterKey.onClicked: parNameField.focus = true
         }
         SectionHeader
         {
-            text: "Plot color"
+            text: qsTr("Plot color")
         }
 
         Row
@@ -83,7 +83,7 @@ Dialog
 
             Button
             {
-                text: "Change"
+                text: qsTr("Change")
                 anchors.verticalCenter: plotColorLegend.verticalCenter
                 onClicked:
                 {

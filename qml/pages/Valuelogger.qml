@@ -34,7 +34,7 @@ Page
         {
             MenuItem
             {
-                text: "About..."
+                text: qsTr("About...")
                 onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"),
                                           { "version": logger.version,
                                               "year": "2014",
@@ -54,13 +54,13 @@ Page
 
             PageHeader
             {
-                title: "Valuelogger"
+                title: "Value Logger"
             }
 
             Button
             {
 
-                text: "Add new parameter"
+                text: qsTr("Add new parameter")
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: addParameter()
             }
@@ -89,7 +89,7 @@ Page
 
                 function remove()
                 {
-                    remorseAction("Deleting", function()
+                    remorseAction(qsTr("Deleting"), function()
                     {
                         logger.deleteParameterEntry(parName, dataTable)
                         parameters.model.remove(index)
@@ -102,7 +102,7 @@ Page
                                                 {"parameterName": parName,
                                                     "parameterDescription": parDescription,
                                                     "plotColor": plotcolor,
-                                                    "pageTitle": "Edit"})
+                                                    "pageTitle": qsTr("Edit")})
 
                     dialog.accepted.connect(function()
                     {
@@ -184,7 +184,7 @@ Page
                     {
                         MenuItem
                         {
-                            text: "Show raw data"
+                            text: qsTr("Show raw data")
                             onClicked:
                             {
                                 var tmp = logger.readData(dataTable)
@@ -206,13 +206,13 @@ Page
 
                         MenuItem
                         {
-                            text: "Edit"
+                            text: qsTr("Edit")
                             onClicked: editParameter()
                         }
 
                         MenuItem
                         {
-                            text: "Remove"
+                            text: qsTr("Remove")
                             onClicked: remove()
                         }
                     }
@@ -228,7 +228,7 @@ Page
 
         Button
         {
-            text: "Plot selected"
+            text: qsTr("Plot selected")
             enabled: parameterList.count > 0
 
             onClicked:

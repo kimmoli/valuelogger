@@ -45,7 +45,7 @@ Page
             function remove()
             {
                 console.log("Deleting...")
-                remorseAction("Deleting", function()
+                remorseAction(qsTr("Deleting"), function()
                 {
                     logger.deleteData(dataTable, key)
                     dataListView.model.remove(index)
@@ -105,13 +105,13 @@ Page
                 {
                     MenuItem
                     {
-                        text: "Edit"
+                        text: qsTr("Edit")
                         onClicked: editData();
                     }
 
                     MenuItem
                     {
-                        text: "Remove"
+                        text: qsTr("Remove")
                         onClicked: remove();
                     }
                 }

@@ -14,7 +14,7 @@ Page
     PageHeader
     {
         id: ph
-        title: "Plot"
+        title: qsTr("Plot")
     }
 
     LinePlot

@@ -21,13 +21,13 @@ Dialog
         {
             var tmp = new Date()
             updateDateTime(Qt.formatDateTime(tmp, "yyyy-MM-dd"), Qt.formatDateTime(tmp, "hh:mm:ss"))
-            pageTitle = "Add"
+            pageTitle = qsTr("Add")
         }
         else
         {
             updateDateTime(nowDate, nowTime)
             valueField.text = value
-            pageTitle = "Edit"
+            pageTitle = qsTr("Edit")
         }
     }
 
@@ -54,9 +54,9 @@ Dialog
     DialogHeader
     {
         id: pageHeader
-        title: pageTitle + " value"
+        title: pageTitle + qsTr(" value")
         acceptText: pageTitle
-        cancelText: "Cancel"
+        cancelText: qsTr("Cancel")
     }
 
     Column
@@ -83,7 +83,7 @@ Dialog
 
         SectionHeader
         {
-            text: "Timestamp"
+            text: qsTr("Timestamp")
         }
 
         Row
@@ -158,7 +158,7 @@ Dialog
 
         SectionHeader
         {
-            text: "Value"
+            text: qsTr("Value")
         }
 
         TextField
@@ -166,10 +166,10 @@ Dialog
             id: valueField
             focus: true
             width: parent.width
-            label: "Value"
+            label: qsTr("Value")
             font.pixelSize: Theme.fontSizeExtraLarge
             color: Theme.primaryColor
-            placeholderText: "Enter new value here"
+            placeholderText: qsTr("Enter new value here")
             onTextChanged: addValuePage.canAccept = text.length > 0
             inputMethodHints: Qt.ImhDigitsOnly
             EnterKey.enabled: text.length > 0
