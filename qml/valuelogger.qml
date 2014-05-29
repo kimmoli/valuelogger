@@ -30,7 +30,8 @@ ApplicationWindow
                                          "parDescription": tmp[i]["description"],
                                          "plotcolor": tmp[i]["plotcolor"],
                                          "dataTable": tmp[i]["datatable"],
-                                         "visualize": (tmp[i]["visualize"] == 1 ? true : false) })
+                                         "visualize": (tmp[i]["visualize"] == 1 ? true : false),
+                                         "visualizeChanged": false})
             }
         }
     }

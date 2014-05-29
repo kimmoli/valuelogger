@@ -130,38 +130,38 @@
 <context>
     <name>Valuelogger</name>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="37"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="38"/>
         <source>About...</source>
         <translation>Om...</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="63"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="64"/>
         <source>Add new parameter</source>
         <translation>Lägg till ny parameter</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="92"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="93"/>
         <source>Deleting</source>
         <translation>Tar bort</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="105"/>
-        <location filename="../qml/pages/Valuelogger.qml" line="209"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="106"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="211"/>
         <source>Edit</source>
         <translation>Redigera</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="187"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="189"/>
         <source>Show raw data</source>
         <translation>Visa rådata</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="215"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="217"/>
         <source>Remove</source>
         <translation>Ta bort</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="231"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="233"/>
         <source>Plot selected</source>
         <translation>Markerat diagram</translation>
     </message>

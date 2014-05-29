@@ -22,7 +22,8 @@ Page
                                   "parDescription": dialog.parameterDescription,
                                   "visualize": true,
                                   "plotcolor": logger.colorToString(dialog.plotColor),
-                                  "dataTable": datatable})
+                                  "dataTable": datatable,
+                                  "visualizeChanged": false})
         } )
     }
 
@@ -111,7 +112,7 @@ Page
                         console.log(dialog.parameterDescription)
                         console.log(dialog.plotColor)
 
-                        logger.addParameterEntry(dataTable, dialog.parameterName, dialog.parameterDescription, true, dialog.plotColor)
+                        logger.addParameterEntry(dataTable, dialog.parameterName, dialog.parameterDescription, visualize, dialog.plotColor)
 
                         parameters.model.setProperty(index, "parName", dialog.parameterName)
                         parameters.model.setProperty(index, "parDescription", dialog.parameterDescription)
@@ -130,6 +131,7 @@ Page
                         onCheckedChanged:
                         {
                             parameterList.setProperty(index, "visualize", checked)
+                            parameterList.setProperty(index, "visualizeChanged", true)
                         }
                     }
 
@@ -240,6 +242,14 @@ Page
 
                 for (var a=0; a<parameterList.count; a++)
                 {
+                    /* Save changes if visualize touched */
+                    if (parameterList.get(a).visualizeChanged)
+                        logger.addParameterEntry(parameterList.get(a).dataTable,
+                                                 parameterList.get(a).parName,
+                                                 parameterList.get(a).parDescription,
+                                                 parameterList.get(a).visualize,
+                                                 parameterList.get(a).plotcolor)
+
                     if (parameterList.get(a).visualize)
                     {
                         console.log("showing data from " + parameterList.get(a).parName)
