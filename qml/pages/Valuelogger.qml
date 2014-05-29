@@ -94,6 +94,7 @@ Page
                     {
                         logger.deleteParameterEntry(parName, dataTable)
                         parameters.model.remove(index)
+                        lastDataAddedIndex = -1
                     })
                 }
 
@@ -161,6 +162,8 @@ Page
                         onClicked:
                         {
                             console.log("clicked add value button")
+
+                            lastDataAddedIndex = index
 
                             var dialog = pageStack.push(Qt.resolvedUrl("AddValue.qml"),
                                                         {"parameterName": parName,

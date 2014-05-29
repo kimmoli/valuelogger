@@ -9,10 +9,53 @@ ApplicationWindow
     property var plotColors:[ "#ffffff", "#ff0080", "#ff8000", "#ffff00", "#00ff00",
                               "#00ff80", "#00ffff", "#0000ff", "#8000ff", "#ff00ff" ]
 
+    property int lastDataAddedIndex: -1
+
 
     initialPage: Qt.resolvedUrl("pages/Valuelogger.qml") //Component { Valuelogger { } }
 
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
+
+    property string coverIconLeft: "image://theme/icon-cover-new"
+    //property string coverIconRight: "image://theme/icon-m-image"
+
+    function coverLeftClicked()
+    {
+        if ((lastDataAddedIndex != -1) && (lastDataAddedIndex < parameterList.count))
+        {
+            console.log("Adding value to index " + lastDataAddedIndex)
+
+            var dialog = pageStack.push(Qt.resolvedUrl("pages/AddValue.qml"),
+                                        {"parameterName": parameterList.get(lastDataAddedIndex).parName,
+                                         "parameterDescription": parameterList.get(lastDataAddedIndex).parDescription })
+
+            dialog.accepted.connect(function()
+            {
+                console.log("dialog accepted")
+                console.log(" value is " + dialog.value)
+                console.log(" date is " + dialog.nowDate)
+                console.log(" time is " + dialog.nowTime)
+
+                logger.addData(parameterList.get(lastDataAddedIndex).dataTable, "", dialog.value, dialog.nowDate + " " + dialog.nowTime)
+
+                valuelogger.deactivate()
+            })
+            dialog.rejected.connect(function()
+            {
+                console.log("Dialog rejected")
+                valuelogger.deactivate()
+            })
+
+            valuelogger.activate()
+        }
+        else
+            console.log("This should never happen")
+    }
+
+    function coverRightClicked()
+    {
+        console.log("coverRightClicked()")
+    }
 
     Logger
     {
