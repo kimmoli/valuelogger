@@ -8,7 +8,7 @@ CoverBackground
         id: im
         source: "/usr/share/icons/hicolor/86x86/apps/harbour-valuelogger.png"
         anchors.top: parent.top
-        anchors.topMargin: (parent.height - im.height - label.height - label.anchors.topMargin) / 2
+        anchors.topMargin: ((parent.height - im.height - label.height - label.anchors.topMargin) / 2) - (par.visible ? 30 : 0)
         anchors.horizontalCenter: parent.horizontalCenter
     }
     Label
@@ -24,8 +24,8 @@ CoverBackground
         id: par
         visible: lastDataAddedIndex != -1
         anchors.top: label.bottom
-        font.pixelSize: Theme.fontSizeTiny
-        anchors.topMargin: 10
+        font.pixelSize: Theme.fontSizeExtraSmall
+        anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
         text: lastDataAddedIndex != -1 ? parameterList.get(lastDataAddedIndex).parName : ""
     }
