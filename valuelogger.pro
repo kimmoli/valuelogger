@@ -16,7 +16,8 @@ system(lupdate qml -ts $$PWD/i18n/*.ts)
 system(lrelease $$PWD/i18n/*.ts)
 
 i18n.path = /usr/share/harbour-valuelogger/i18n
-i18n.files = i18n/translations_fi.qm
+i18n.files = i18n/translations_fi.qm \
+             i18n/translations_sv.qm
 
 INSTALLS += i18n
 
@@ -37,8 +38,11 @@ OTHER_FILES += qml/valuelogger.qml \
     qml/pages/ShowData.qml \
     qml/pages/DrawData.qml \
     qml/components/LinePlot.qml \
-    i18n/translations_fi.ts
+    i18n/translations_fi.ts \
+    i18n/translations_sv.ts
 
-TRANSLATIONS += i18n/translations_fi.ts
+TRANSLATIONS += i18n/translations_fi.ts \
+                i18n/translations_sv.ts
+
 
 
