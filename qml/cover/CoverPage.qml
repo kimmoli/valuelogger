@@ -27,7 +27,7 @@ CoverBackground
         font.pixelSize: Theme.fontSizeTiny
         anchors.topMargin: 10
         anchors.horizontalCenter: parent.horizontalCenter
-        text: parameterList.get(lastDataAddedIndex).parName
+        text: lastDataAddedIndex != -1 ? parameterList.get(lastDataAddedIndex).parName : ""
     }
 
     CoverActionList   /* Courtesy of http://sailfishdev.tumblr.com/post/86418219502/dynamic-coverpage */
