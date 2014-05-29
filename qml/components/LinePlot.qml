@@ -36,8 +36,8 @@ Rectangle
     property var parInfoModel: null
     property string column: "value"
 
-    property int min : 0
-    property int max : 1
+    property real min : 0.0
+    property real max : 1.0
 
     property int fontSize: 14
     property bool fontBold: true
