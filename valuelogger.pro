@@ -39,7 +39,8 @@ OTHER_FILES += qml/valuelogger.qml \
     qml/pages/DrawData.qml \
     qml/components/LinePlot.qml \
     i18n/translations_fi.ts \
-    i18n/translations_sv.ts
+    i18n/translations_sv.ts \
+    qml/icon-cover-plot.png
 
 TRANSLATIONS += i18n/translations_fi.ts \
                 i18n/translations_sv.ts

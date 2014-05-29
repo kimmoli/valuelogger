@@ -17,7 +17,7 @@ ApplicationWindow
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 
     property string coverIconLeft: "image://theme/icon-cover-new"
-    //property string coverIconRight: "image://theme/icon-m-image"
+    property string coverIconRight: "../icon-cover-plot.png"
 
     function coverLeftClicked()
     {
@@ -54,7 +54,18 @@ ApplicationWindow
 
     function coverRightClicked()
     {
-        console.log("coverRightClicked()")
+        console.log("showing data from " + parameterList.get(lastDataAddedIndex).parName)
+
+        var l = []
+
+        parInfo.clear()
+        parInfo.append({"name": parameterList.get(lastDataAddedIndex).parName,
+                        "plotcolor": parameterList.get(lastDataAddedIndex).plotcolor})
+        l.push(logger.readData(parameterList.get(lastDataAddedIndex).dataTable))
+
+        pageStack.push(Qt.resolvedUrl("pages/DrawData.qml"), {"dataList": l, "parInfo": parInfo})
+
+        valuelogger.activate()
     }
 
     Logger
@@ -82,7 +93,11 @@ ApplicationWindow
     ListModel
     {
         id: parameterList
+    }
 
+    ListModel
+    {
+        id: parInfo
     }
 }
 

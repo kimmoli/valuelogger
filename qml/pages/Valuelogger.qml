@@ -272,11 +272,6 @@ Page
             }
             anchors.top: parameters.bottom
             anchors.horizontalCenter: parent.horizontalCenter
-
-            ListModel
-            {
-                id: parInfo
-            }
         }
     }
 

@@ -39,10 +39,10 @@ CoverBackground
             iconSource: coverIconLeft
             onTriggered: coverLeftClicked()
         }
-//        CoverAction
-//        {
-//            iconSource: coverIconRight
-//            onTriggered: coverRightClicked()
-//        }
+        CoverAction
+        {
+            iconSource: coverIconRight
+            onTriggered: coverRightClicked()
+        }
     }
 }
