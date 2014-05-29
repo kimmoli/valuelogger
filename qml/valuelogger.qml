@@ -25,9 +25,16 @@ ApplicationWindow
         {
             console.log("Adding value to index " + lastDataAddedIndex)
 
-            var dialog = pageStack.push(Qt.resolvedUrl("pages/AddValue.qml"),
-                                        {"parameterName": parameterList.get(lastDataAddedIndex).parName,
-                                         "parameterDescription": parameterList.get(lastDataAddedIndex).parDescription })
+            var dialog
+
+            if (pageStack.depth > 1)
+                dialog = pageStack.replace(Qt.resolvedUrl("pages/AddValue.qml"),
+                                            {"parameterName": parameterList.get(lastDataAddedIndex).parName,
+                                             "parameterDescription": parameterList.get(lastDataAddedIndex).parDescription })
+            else
+                dialog = pageStack.push(Qt.resolvedUrl("pages/AddValue.qml"),
+                                            {"parameterName": parameterList.get(lastDataAddedIndex).parName,
+                                             "parameterDescription": parameterList.get(lastDataAddedIndex).parDescription })
 
             dialog.accepted.connect(function()
             {
@@ -63,7 +70,10 @@ ApplicationWindow
                         "plotcolor": parameterList.get(lastDataAddedIndex).plotcolor})
         l.push(logger.readData(parameterList.get(lastDataAddedIndex).dataTable))
 
-        pageStack.push(Qt.resolvedUrl("pages/DrawData.qml"), {"dataList": l, "parInfo": parInfo})
+        if (pageStack.depth > 1)
+            pageStack.replace(Qt.resolvedUrl("pages/DrawData.qml"), {"dataList": l, "parInfo": parInfo})
+        else
+            pageStack.push(Qt.resolvedUrl("pages/DrawData.qml"), {"dataList": l, "parInfo": parInfo})
 
         valuelogger.activate()
     }
