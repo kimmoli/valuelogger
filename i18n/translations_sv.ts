@@ -145,23 +145,23 @@
         <translation>Tar bort</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="106"/>
-        <location filename="../qml/pages/Valuelogger.qml" line="211"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="107"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="214"/>
         <source>Edit</source>
         <translation>Redigera</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="189"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="192"/>
         <source>Show raw data</source>
         <translation>Visa rådata</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="217"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="220"/>
         <source>Remove</source>
         <translation>Ta bort</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="233"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="236"/>
         <source>Plot selected</source>
         <translation>Markerat diagram</translation>
     </message>

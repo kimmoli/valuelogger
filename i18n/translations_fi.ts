@@ -145,23 +145,23 @@
         <translation>Poistetaan</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="106"/>
-        <location filename="../qml/pages/Valuelogger.qml" line="211"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="107"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="214"/>
         <source>Edit</source>
         <translation>Muokkaa</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="189"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="192"/>
         <source>Show raw data</source>
         <translation>Näytä arvot</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="217"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="220"/>
         <source>Remove</source>
         <translation>Poista</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="233"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="236"/>
         <source>Plot selected</source>
         <translation>Piirrä käppyrä</translation>
     </message>
