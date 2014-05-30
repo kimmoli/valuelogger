@@ -80,7 +80,7 @@ Rectangle
         valueMax.text = max.toFixed(2)
         valueMin.text = min.toFixed(2)
         for (var midIndex=0; midIndex<4; midIndex++)
-            valueMiddle.itemAt(midIndex).text = (((max+min) / 5.)*(midIndex+1)).toFixed(2)
+            valueMiddle.itemAt(midIndex).text = (((max-min) / 5.)*(midIndex+1)).toFixed(2)
     }
 
     function update()
