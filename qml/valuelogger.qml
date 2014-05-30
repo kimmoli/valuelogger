@@ -19,20 +19,27 @@ ApplicationWindow
     property string coverIconLeft: "image://theme/icon-cover-new"
     property string coverIconRight: "../icon-cover-plot.png"
 
+    function getBottomPageId()
+    {
+        return pageStack.find( function(page)
+        {
+            return (page._depth === 0)
+        })
+    }
+
     function coverLeftClicked()
     {
         if ((lastDataAddedIndex != -1) && (lastDataAddedIndex < parameterList.count))
         {
             console.log("Adding value to index " + lastDataAddedIndex)
 
-            var dialog
+            pageStack.pop(getBottomPageId(), PageStackAction.Immediate)
+            /* Remove all except bottom page, Thansk for Acce:
+             * https://together.jolla.com/question/44103/how-to-remove-all-except-bottom-page-from-pagestack/#post-id-44117
+             */
 
-            if (pageStack.depth > 1)
-                dialog = pageStack.replace(Qt.resolvedUrl("pages/AddValue.qml"),
-                                            {"parameterName": parameterList.get(lastDataAddedIndex).parName,
-                                             "parameterDescription": parameterList.get(lastDataAddedIndex).parDescription })
-            else
-                dialog = pageStack.push(Qt.resolvedUrl("pages/AddValue.qml"),
+            var dialog
+            dialog = pageStack.push(Qt.resolvedUrl("pages/AddValue.qml"),
                                             {"parameterName": parameterList.get(lastDataAddedIndex).parName,
                                              "parameterDescription": parameterList.get(lastDataAddedIndex).parDescription })
 
@@ -70,13 +77,14 @@ ApplicationWindow
                         "plotcolor": parameterList.get(lastDataAddedIndex).plotcolor})
         l.push(logger.readData(parameterList.get(lastDataAddedIndex).dataTable))
 
-        if (pageStack.depth > 1)
-            pageStack.replace(Qt.resolvedUrl("pages/DrawData.qml"), {"dataList": l, "parInfo": parInfo})
-        else
-            pageStack.push(Qt.resolvedUrl("pages/DrawData.qml"), {"dataList": l, "parInfo": parInfo})
+        pageStack.pop(getBottomPageId(), PageStackAction.Immediate)
+
+        pageStack.push(Qt.resolvedUrl("pages/DrawData.qml"), {"dataList": l, "parInfo": parInfo})
 
         valuelogger.activate()
     }
+
+
 
     Logger
     {
