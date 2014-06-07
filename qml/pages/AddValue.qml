@@ -172,6 +172,7 @@ Dialog
             placeholderText: qsTr("Enter new value here")
             onTextChanged: addValuePage.canAccept = text.length > 0
             inputMethodHints: Qt.ImhDigitsOnly
+            validator: RegExpValidator { regExp: /-?\d+([,|\.]?\d+)?/ }
             EnterKey.enabled: text.length > 0
             EnterKey.iconSource: "image://theme/icon-m-enter-accept"
             EnterKey.onClicked: addValuePage.accept()
