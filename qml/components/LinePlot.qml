@@ -39,9 +39,6 @@ Rectangle
     property real min : 0.0
     property real max : 1.0
 
-    property real midScale : 0.5
-    property bool firstAfterPinchStart : false
-
     property int fontSize: 14
     property bool fontBold: true
 
@@ -57,7 +54,7 @@ Rectangle
         return Math.max(p1.y, p2.y) - Math.min(p1.y, p2.y)
     }
 
-    function getMinMax(data, scaled)
+    function getMinMax(data)
     {
         var last = data.length - 1;
         var first = 0;
@@ -72,14 +69,8 @@ Rectangle
         if (s.getTime() > xend.getTime())
             xend = s
 
-        xStart.text = Qt.formatDateTime(xend, "dd.MM.yyyy hh:mm")
-        xEnd.text = Qt.formatDateTime(xstart, "dd.MM.yyyy hh:mm")
-
         first = 0;
         last = data.length - 1;
-
-        min = 0.0
-        max = 1.0
 
         for (var i = first; i <= last; i++)
         {
@@ -91,28 +82,53 @@ Rectangle
             if (l[column] < min)
                 min = l[column];
         }
+    }
+
+    function updateVerticalScale()
+    {
+
+        var m = (((max-min))/canvas.height)*pinchZoom.deltaY
+
+        max = max - m/2
+        min = min + m/2
 
         var d = (((max-min))/canvas.height)*pinchMove.movementY
 
-        max = (max + d)
-        min = (min + d)
-
-        if (firstAfterPinchStart)
-        {
-            firstAfterPinchStart = false
-            midScale = min + ((max-min) / 2.0)
-        }
-
-        console.log("Midscale is ", midScale, "zoom is", pinchZoom.sY)
-
-        max = max + (midScale * (1.0 - pinchZoom.sY))
-        min = min - (midScale * (1.0 - pinchZoom.sY))
+        max = max + d
+        min = min + d
 
         valueMax.text = max.toFixed(2)
         valueMin.text = min.toFixed(2)
 
         for (var midIndex=0; midIndex<4; midIndex++)
             valueMiddle.itemAt(midIndex).text = (min+(((max-min) / 5.)*(midIndex+1))).toFixed(2)
+
+    }
+
+    function updateHorizontalScale()
+    {
+        var mm = (((xstart.getTime() - xend.getTime()))/canvas.width)*pinchZoom.deltaX
+
+        var t = new Date()
+        t.setTime(xstart.getTime() - Math.floor(mm))
+        xstart = t
+
+        var u = new Date()
+        u.setTime(xend.getTime() + Math.floor(mm))
+        xend = u
+
+        var dd = (((xstart.getTime() - xend.getTime()))/canvas.width)*pinchMove.movementX
+
+        t = new Date()
+        t.setTime(xstart.getTime() + Math.floor(dd))
+        xstart = t
+
+        u = new Date()
+        u.setTime(xend.getTime() + Math.floor(dd))
+        xend = u
+
+        xStart.text = Qt.formatDateTime(xend, "dd.MM.yyyy hh:mm")
+        xEnd.text = Qt.formatDateTime(xstart, "dd.MM.yyyy hh:mm")
     }
 
     function update()
@@ -301,7 +317,6 @@ Rectangle
 
         function drawPlot(ctx, data, color, column)
         {
-            console.log("Plotting with color " + color)
             ctx.save();
             ctx.globalAlpha = 1.0;
             ctx.strokeStyle = color;
@@ -331,7 +346,6 @@ Rectangle
 
         onPaint:
         {
-            console.log("onPaint")
             var ctx = canvas.getContext("2d");
 
             ctx.globalCompositeOperation = "source-over";
@@ -349,11 +363,14 @@ Rectangle
             xstart = new Date(dataListModel[0][0]["timestamp"])
             xend = new Date(dataListModel[0][0]["timestamp"])
 
+            min = 0.0
+            max = 1.0
+
             for (var n=0; n<dataListModel.length; n++)
                 getMinMax(dataListModel[n])
 
-            console.log("min " + min + " max " + max)
-            console.log("start " + Qt.formatDateTime(xstart, "dd.MM.yyyy hh:mm") + " end " + Qt.formatDateTime(xend, "dd.MM.yyyy hh:mm"))
+            updateVerticalScale()
+            updateHorizontalScale()
 
             for (n=0; n<dataListModel.length; n++)
             {
@@ -366,38 +383,25 @@ Rectangle
             id: pinchZoom
             anchors.fill: canvas
 
-            property real iD
-            property real iXD
-            property real iYD
+            property real iX
+            property real iY
+            property real deltaX : 0
+            property real deltaY : 0
+
             property point lv1
             property point lv2
-            property bool scaleInX
 
-            property real sX : 1.0
-            property real sY : 1.0
-            property real isX : 1.0
-            property real isY : 1.0
+            property bool scaleInX
 
             onPinchFinished:
             {
-                console.log("PinchArea onPinchFinished")
-                isX = sX
-                isY = sY
             }
             onPinchStarted:
             {
-                console.log("PinchArea onPinchStarted")
-                iXD = distanceX(pinch.point1, pinch.point2)
-                iYD = distanceY(pinch.point1, pinch.point2)
+                iX = distanceX(pinch.point1, pinch.point2)
+                iY = distanceY(pinch.point1, pinch.point2)
 
-                scaleInX = (iXD > iYD)
-                if (scaleInX)
-                    console.log("Scaling in X axis")
-                else
-                    console.log("Scaling in Y axis")
-
-                firstAfterPinchStart = true
-
+                scaleInX = (iX > iY)
             }
             onPinchUpdated:
             {
@@ -407,15 +411,21 @@ Rectangle
                     lv2 = pinch.point2
                 }
 
-                if (distanceX(lv1, lv2) / iXD != 0.0 && scaleInX)
-                    sX = isX * distanceX(lv1, lv2) / iXD
-                if (distanceY(lv1, lv2) / iYD != 0.0 && !scaleInX)
-                    sY = isY * distanceY(lv1, lv2) / iYD
+                if (scaleInX)
+                {
+                    var dX = distanceX(lv1, lv2) - iX
+                    iX = distanceX(lv1, lv2)
+                    deltaX += dX
+                }
+                else
+                {
+                    var dY = distanceY(lv1, lv2) - iY
+                    iY = distanceY(lv1, lv2)
+                    deltaY += dY
+                }
 
                 canvas.requestPaint()
 
-                console.log("Scale X " + Number(distanceX(pinch.point1, pinch.point2) / iXD).toFixed(1),
-                            "Scale Y " + Number(distanceY(pinch.point1, pinch.point2) / iYD).toFixed(1))
             }
             MouseArea
             {
@@ -437,11 +447,11 @@ Rectangle
                 }
                 onDoubleClicked:
                 {
-                    console.log("Reset scaling")
                     movementX = 0
                     movementY = 0
-                    pinchZoom.sX = 1.0
-                    pinchZoom.sY = 1.0
+                    pinchZoom.deltaX = 0
+                    pinchZoom.deltaY = 0
+
                     canvas.requestPaint()
                 }
                 onPositionChanged:
@@ -452,8 +462,6 @@ Rectangle
                     var dY = mouseY - iY
                     iY = mouseY
                     movementY += dY
-
-                    console.log("Movement now ", movementX, " - ", movementY)
 
                     canvas.requestPaint()
                 }
