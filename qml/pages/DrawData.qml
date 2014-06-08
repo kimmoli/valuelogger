@@ -9,6 +9,8 @@ Page
     property var dataList : []
     property var parInfo : null
 
+    backNavigation: !plotDraggingActive
+
     allowedOrientations: Orientation.Portrait | Orientation.Landscape
 
     PageHeader

@@ -68,7 +68,7 @@ void Logger::createDataTable(QString table)
 {
     QSqlQuery query;
 
-    if (query.exec("CREATE TABLE _" + table + " (key TEXT PRIMARY KEY, timestamp TEXT, value TEXT)"))
+    if (query.exec("CREATE TABLE IF NOT EXISTS _" + table + " (key TEXT PRIMARY KEY, timestamp TEXT, value TEXT)"))
     {
         qDebug() << "datatable created _" << table;
     }

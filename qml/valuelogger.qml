@@ -11,6 +11,8 @@ ApplicationWindow
 
     property int lastDataAddedIndex: -1
 
+    property bool plotDraggingActive : false
+
 
     initialPage: Qt.resolvedUrl("pages/Valuelogger.qml") //Component { Valuelogger { } }
 

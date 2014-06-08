@@ -39,13 +39,25 @@ Rectangle
     property real min : 0.0
     property real max : 1.0
 
+    property real midScale : 0.5
+    property bool firstAfterPinchStart : false
+
     property int fontSize: 14
     property bool fontBold: true
 
     property date xstart : new Date()
     property date xend : new Date()
 
-    function getMinMax(data)
+    function distanceX(p1, p2)
+    {
+        return Math.max(p1.x, p2.x) - Math.min(p1.x, p2.x)
+    }
+    function distanceY(p1, p2)
+    {
+        return Math.max(p1.y, p2.y) - Math.min(p1.y, p2.y)
+    }
+
+    function getMinMax(data, scaled)
     {
         var last = data.length - 1;
         var first = 0;
@@ -66,6 +78,9 @@ Rectangle
         first = 0;
         last = data.length - 1;
 
+        min = 0.0
+        max = 1.0
+
         for (var i = first; i <= last; i++)
         {
             var l = data[i]
@@ -77,18 +92,32 @@ Rectangle
                 min = l[column];
         }
 
+        var d = (((max-min))/canvas.height)*pinchMove.movementY
+
+        max = (max + d)
+        min = (min + d)
+
+        if (firstAfterPinchStart)
+        {
+            firstAfterPinchStart = false
+            midScale = min + ((max-min) / 2.0)
+        }
+
+        console.log("Midscale is ", midScale, "zoom is", pinchZoom.sY)
+
+        max = max + (midScale * (1.0 - pinchZoom.sY))
+        min = min - (midScale * (1.0 - pinchZoom.sY))
+
         valueMax.text = max.toFixed(2)
         valueMin.text = min.toFixed(2)
+
         for (var midIndex=0; midIndex<4; midIndex++)
             valueMiddle.itemAt(midIndex).text = (min+(((max-min) / 5.)*(midIndex+1))).toFixed(2)
     }
 
     function update()
     {
-
-//        getMinMax(dataListModel)
-
-        canvas.requestPaint();
+        canvas.requestPaint()
     }
 
     Text
@@ -234,12 +263,6 @@ Rectangle
         renderTarget: Canvas.FramebufferObject
         antialiasing: true
 
-        MouseArea
-        {
-            anchors.fill: canvas
-            onClicked: legend.opacity = 1.0
-        }
-
         property int first: 0
         property int last: 0
 
@@ -337,5 +360,106 @@ Rectangle
                 drawPlot(ctx, dataListModel[n], parInfoModel.get(n).plotcolor, column);
             }
         }
+
+        PinchArea
+        {
+            id: pinchZoom
+            anchors.fill: canvas
+
+            property real iD
+            property real iXD
+            property real iYD
+            property point lv1
+            property point lv2
+            property bool scaleInX
+
+            property real sX : 1.0
+            property real sY : 1.0
+            property real isX : 1.0
+            property real isY : 1.0
+
+            onPinchFinished:
+            {
+                console.log("PinchArea onPinchFinished")
+                isX = sX
+                isY = sY
+            }
+            onPinchStarted:
+            {
+                console.log("PinchArea onPinchStarted")
+                iXD = distanceX(pinch.point1, pinch.point2)
+                iYD = distanceY(pinch.point1, pinch.point2)
+
+                scaleInX = (iXD > iYD)
+                if (scaleInX)
+                    console.log("Scaling in X axis")
+                else
+                    console.log("Scaling in Y axis")
+
+                firstAfterPinchStart = true
+
+            }
+            onPinchUpdated:
+            {
+                if (pinch.point1 !== pinch.point2)
+                {
+                    lv1 = pinch.point1
+                    lv2 = pinch.point2
+                }
+
+                if (distanceX(lv1, lv2) / iXD != 0.0 && scaleInX)
+                    sX = isX * distanceX(lv1, lv2) / iXD
+                if (distanceY(lv1, lv2) / iYD != 0.0 && !scaleInX)
+                    sY = isY * distanceY(lv1, lv2) / iYD
+
+                canvas.requestPaint()
+
+                console.log("Scale X " + Number(distanceX(pinch.point1, pinch.point2) / iXD).toFixed(1),
+                            "Scale Y " + Number(distanceY(pinch.point1, pinch.point2) / iYD).toFixed(1))
+            }
+            MouseArea
+            {
+                property real iX
+                property real iY
+                property real movementX : 0
+                property real movementY : 0
+
+                id: pinchMove
+                anchors.fill: parent
+
+                onClicked: legend.opacity = 1.0
+
+                onPressed:
+                {
+                    plotDraggingActive = true
+                    iX = mouseX
+                    iY = mouseY
+                }
+                onDoubleClicked:
+                {
+                    console.log("Reset scaling")
+                    movementX = 0
+                    movementY = 0
+                    pinchZoom.sX = 1.0
+                    pinchZoom.sY = 1.0
+                    canvas.requestPaint()
+                }
+                onPositionChanged:
+                {
+                    var dX = mouseX - iX
+                    iX = mouseX
+                    movementX += dX
+                    var dY = mouseY - iY
+                    iY = mouseY
+                    movementY += dY
+
+                    console.log("Movement now ", movementX, " - ", movementY)
+
+                    canvas.requestPaint()
+                }
+                onReleased: plotDraggingActive = false
+            }
+        }
+
     }
 }
