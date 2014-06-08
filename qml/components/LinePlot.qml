@@ -363,8 +363,8 @@ Rectangle
             xstart = new Date(dataListModel[0][0]["timestamp"])
             xend = new Date(dataListModel[0][0]["timestamp"])
 
-            min = 0.0
-            max = 1.0
+            min = 99999999.9
+            max = -99999999.9
 
             for (var n=0; n<dataListModel.length; n++)
                 getMinMax(dataListModel[n])
