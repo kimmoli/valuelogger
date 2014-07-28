@@ -35,6 +35,8 @@ public:
 
     Q_INVOKABLE QString colorToString(QColor color) { return color.name(); }
 
+    Q_INVOKABLE void exportToCSV();
+
     void dropDataTable(QString table);
 
     QString generateHash(QString sometext);

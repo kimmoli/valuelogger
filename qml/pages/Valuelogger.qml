@@ -42,6 +42,12 @@ Page
                                               "name": "Value Logger",
                                               "imagelocation": "/usr/share/icons/hicolor/86x86/apps/harbour-valuelogger.png"} )
             }
+
+            MenuItem
+            {
+                text: qsTr("Export to CSV")
+                onClicked: logger.exportToCSV()
+            }
         }
 
         contentHeight: column.height

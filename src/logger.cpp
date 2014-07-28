@@ -15,6 +15,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <QtSql>
 #include <QTime>
 #include <QColor>
+#include <QFile>
+#include <QLocale>
 
 const QString Logger::DB_NAME = "";
 
@@ -295,6 +297,52 @@ void Logger::closeDatabase()
         db->removeDatabase(Logger::DB_NAME);
         db->close();
     }
+}
+
+/*
+ * Export to CSV file
+ */
+
+void Logger::exportToCSV()
+{
+    qDebug() << "Exporting";
+
+    QLocale loc = QLocale::system(); /* Should return current locale */
+
+    QChar separator = (loc.decimalPoint() == '.') ? ',' : ';';
+    qDebug() << "Using" << separator << "as separator";
+
+    QString filename = QString("%1/valuelogger.csv").arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+    qDebug() << "Output filename is" << filename;
+
+    QFile file(filename);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&file);
+    out.setCodec("ISO-8859-1");
+
+    QVariantList eParameters = readParameters();
+    QListIterator<QVariant> i(eParameters);
+
+    while (i.hasNext())
+    {
+        QVariantMap eParamData = i.next().value<QVariantMap>();
+
+        out << eParamData["name"].toString() << separator << eParamData["description"].toString() << "\n";
+
+        QVariantList eData = readData(eParamData["datatable"].toString());
+        QListIterator<QVariant> n(eData);
+
+        while (n.hasNext())
+        {
+            QVariantMap eDataData = n.next().value<QVariantMap>();
+
+            out << eDataData["timestamp"].toString() << separator << eDataData["value"].toString().replace('.', loc.decimalPoint()) << "\n";
+        }
+    }
+    out.flush();
+
+    file.close();
+
 }
 
 Logger::~Logger()
