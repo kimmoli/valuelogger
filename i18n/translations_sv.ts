@@ -56,7 +56,7 @@
 <context>
     <name>DrawData</name>
     <message>
-        <location filename="../qml/pages/DrawData.qml" line="17"/>
+        <location filename="../qml/pages/DrawData.qml" line="19"/>
         <source>Plot</source>
         <translation>Diagram</translation>
     </message>
@@ -135,33 +135,38 @@
         <translation>Om...</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="64"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="48"/>
+        <source>Export to CSV</source>
+        <translation>Exportera till CSV</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/Valuelogger.qml" line="70"/>
         <source>Add new parameter</source>
         <translation>Lägg till ny parameter</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="93"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="99"/>
         <source>Deleting</source>
         <translation>Tar bort</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="107"/>
-        <location filename="../qml/pages/Valuelogger.qml" line="214"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="113"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="220"/>
         <source>Edit</source>
         <translation>Redigera</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="192"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="198"/>
         <source>Show raw data</source>
         <translation>Visa rådata</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="220"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="226"/>
         <source>Remove</source>
         <translation>Ta bort</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="236"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="242"/>
         <source>Plot selected</source>
         <translation>Markerat diagram</translation>
     </message>

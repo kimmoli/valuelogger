@@ -56,7 +56,7 @@
 <context>
     <name>DrawData</name>
     <message>
-        <location filename="../qml/pages/DrawData.qml" line="17"/>
+        <location filename="../qml/pages/DrawData.qml" line="19"/>
         <source>Plot</source>
         <translation>Käppyrä</translation>
     </message>
@@ -135,33 +135,38 @@
         <translation>Tietoja...</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="64"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="48"/>
+        <source>Export to CSV</source>
+        <translation>Vie CSV muotoon</translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/Valuelogger.qml" line="70"/>
         <source>Add new parameter</source>
         <translation>Lisää uusi parametri</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="93"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="99"/>
         <source>Deleting</source>
         <translation>Poistetaan</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="107"/>
-        <location filename="../qml/pages/Valuelogger.qml" line="214"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="113"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="220"/>
         <source>Edit</source>
         <translation>Muokkaa</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="192"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="198"/>
         <source>Show raw data</source>
         <translation>Näytä arvot</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="220"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="226"/>
         <source>Remove</source>
         <translation>Poista</translation>
     </message>
     <message>
-        <location filename="../qml/pages/Valuelogger.qml" line="236"/>
+        <location filename="../qml/pages/Valuelogger.qml" line="242"/>
         <source>Plot selected</source>
         <translation>Piirrä käppyrä</translation>
     </message>
