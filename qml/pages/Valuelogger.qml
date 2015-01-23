@@ -179,10 +179,11 @@ Page
                             {
                                 console.log("dialog accepted")
                                 console.log(" value is " + dialog.value)
+                                console.log(" annotation is " + dialog.annotation)
                                 console.log(" date is " + dialog.nowDate)
                                 console.log(" time is " + dialog.nowTime)
 
-                                logger.addData(dataTable, "", dialog.value, dialog.nowDate + " " + dialog.nowTime)
+                                logger.addData(dataTable, "", dialog.value, dialog.annotation, dialog.nowDate + " " + dialog.nowTime)
                             })
                         }
                     }
@@ -205,7 +206,10 @@ Page
                                 for (var i=0 ; i<tmp.length; i++)
                                 {
                                     console.log(i + " = " + tmp[i]["timestamp"] + " = " + tmp[i]["value"])
-                                    dataList.append( {"key":tmp[i]["key"], "value": tmp[i]["value"], "timestamp": tmp[i]["timestamp"]} )
+                                    dataList.append( {"key":tmp[i]["key"],
+                                                        "value": tmp[i]["value"],
+                                                        "annotation": tmp[i]["annotation"],
+                                                        "timestamp": tmp[i]["timestamp"]} )
                                 }
                                 pageStack.push(Qt.resolvedUrl("ShowData.qml"),
                                                { "parName": parName,

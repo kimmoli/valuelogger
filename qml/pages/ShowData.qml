@@ -58,6 +58,7 @@ Page
                                             {"parameterName": parName,
                                              "parameterDescription": parDescription,
                                              "value": value,
+                                             "annotation": annotation,
                                              "nowDate": Qt.formatDateTime(new Date(timestamp), "yyyy-MM-dd"),
                                              "nowTime": Qt.formatDateTime(new Date(timestamp), "hh:mm:ss")})
 
@@ -65,36 +66,50 @@ Page
                 {
                     console.log("dialog accepted")
                     console.log(" value is " + editDialog.value)
+                    console.log(" annotation is " + editDialog.annotation)
                     console.log(" date is " + editDialog.nowDate)
                     console.log(" time is " + editDialog.nowTime)
 
                     dataListView.model.setProperty(index, "value", editDialog.value)
+                    dataListView.model.setProperty(index, "annotation", editDialog.annotation)
                     dataListView.model.setProperty(index, "timestamp", (editDialog.nowDate + " " + editDialog.nowTime))
 
-                    logger.addData(dataTable, key, editDialog.value, (editDialog.nowDate + " " + editDialog.nowTime))
+                    logger.addData(dataTable, key, editDialog.value, editDialog.annotation, (editDialog.nowDate + " " + editDialog.nowTime))
                 })
             }
 
-            Row
+            Column
             {
                 anchors.verticalCenter: parent.verticalCenter
-                x: Theme.paddingMedium
-                width: parent.width - 3*Theme.paddingMedium
-                spacing: width - timestampLabel.width - valueLabel.width
-
-                Label
+                spacing: Theme.paddingSmall
+                Row
                 {
-                    id: timestampLabel
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: timestamp
+                    x: Theme.paddingMedium
+                    width: parent.width - 3*Theme.paddingMedium
+                    spacing: width - timestampLabel.width - valueLabel.width
+
+                    Label
+                    {
+                        id: timestampLabel
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: timestamp
+                    }
+                    Label
+                    {
+                        id: valueLabel
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: value
+                        horizontalAlignment: Text.AlignRight
+                        font.pixelSize: Theme.fontSizeExtraLarge
+                    }
                 }
                 Label
                 {
-                    id: valueLabel
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: value
-                    horizontalAlignment: Text.AlignRight
-                    font.pixelSize: Theme.fontSizeExtraLarge
+                    id: annotationLabel
+                    x: Theme.paddingMedium
+                    text: annotation
+                    horizontalAlignment: Text.AlignLeft
+                    font.pixelSize: Theme.fontSizeSmall
                 }
             }
 

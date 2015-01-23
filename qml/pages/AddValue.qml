@@ -11,6 +11,7 @@ Dialog
     property string parameterDescription: "value"
     property string pageTitle: "value"  /* Add or Edit*/
     property string value: "value"
+    property string annotation: "annotation"
     property string nowDate: "value"
     property string nowTime: "value"
 
@@ -27,6 +28,7 @@ Dialog
         {
             updateDateTime(nowDate, nowTime)
             valueField.text = value
+            annotationField.text = annotation
             pageTitle = qsTr("Edit")
         }
     }
@@ -48,6 +50,7 @@ Dialog
         if (result === DialogResult.Accepted)
         {
             value = valueField.text.replace(",",".")
+            annotation = annotationField.text
         }
     }
 
@@ -174,9 +177,28 @@ Dialog
             inputMethodHints: Qt.ImhDigitsOnly
             validator: RegExpValidator { regExp: /-?\d+([,|\.]?\d+)?/ }
             EnterKey.enabled: text.length > 0
+            EnterKey.iconSource: "image://theme/icon-m-enter-next"
+            EnterKey.onClicked: annotationField.focus = true
+        }
+
+        SectionHeader
+        {
+            text: qsTr("Annotation")
+        }
+
+        TextField
+        {
+            id: annotationField
+            focus: false
+            width: parent.width
+            label: qsTr("Annotation")
+            font.pixelSize: Theme.fontSizeExtraLarge
+            color: Theme.primaryColor
+            placeholderText: qsTr("Enter annotation here")
             EnterKey.iconSource: "image://theme/icon-m-enter-accept"
             EnterKey.onClicked: addValuePage.accept()
         }
+
 
     }
 

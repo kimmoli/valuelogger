@@ -70,7 +70,7 @@ void Logger::createDataTable(QString table)
 {
     QSqlQuery query;
 
-    if (query.exec("CREATE TABLE IF NOT EXISTS _" + table + " (key TEXT PRIMARY KEY, timestamp TEXT, value TEXT)"))
+    if (query.exec("CREATE TABLE IF NOT EXISTS _" + table + " (key TEXT PRIMARY KEY, timestamp TEXT, value TEXT, annotation TEXT)"))
     {
         qDebug() << "datatable created _" << table;
     }
@@ -121,21 +121,22 @@ void Logger::createParameterTable()
  * key = "" to generate new
  */
 
-QString Logger::addData(QString table, QString key, QString value, QString timestamp)
+QString Logger::addData(QString table, QString key, QString value, QString annotation, QString timestamp)
 {
     qDebug() << "Adding " << value << " (" << timestamp << ") to " << table;
 
     QString objHash = ( (key.length() > 0) ? key : generateHash(value));
 
-    QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO _" + table + " (key,timestamp,value) VALUES (?,?,?)", *db);
+    QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO _" + table + " (key,timestamp,value,annotation) VALUES (?,?,?,?)", *db);
 
     query.addBindValue(objHash);
     query.addBindValue(timestamp);
     query.addBindValue(value);
+    query.addBindValue(annotation);
 
     if (query.exec())
     {
-        qDebug() << "data added " << timestamp << " = " << value;
+        qDebug() << "data added " << timestamp << " = " << value << " + " << annotation;
     }
     else
     {
@@ -163,6 +164,7 @@ QVariantList Logger::readData(QString table)
             map.insert("key", query.record().value("key").toString());
             map.insert("timestamp", query.record().value("timestamp").toString());
             map.insert("value", query.record().value("value").toString());
+            map.insert("annotation", query.record().value("annotation").toString());
             tmp.append(map);
         }
     }
@@ -336,7 +338,7 @@ void Logger::exportToCSV()
         {
             QVariantMap eDataData = n.next().value<QVariantMap>();
 
-            out << eDataData["timestamp"].toString() << separator << eDataData["value"].toString().replace('.', loc.decimalPoint()) << "\n";
+            out << eDataData["timestamp"].toString() << separator << eDataData["value"].toString().replace('.', loc.decimalPoint()) << eDataData["annotation"].toString() << "\n";
         }
     }
     out.flush();

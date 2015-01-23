@@ -49,10 +49,11 @@ ApplicationWindow
             {
                 console.log("dialog accepted")
                 console.log(" value is " + dialog.value)
+                console.log(" annotation is " + dialog.annotation)
                 console.log(" date is " + dialog.nowDate)
                 console.log(" time is " + dialog.nowTime)
 
-                logger.addData(parameterList.get(lastDataAddedIndex).dataTable, "", dialog.value, dialog.nowDate + " " + dialog.nowTime)
+                logger.addData(parameterList.get(lastDataAddedIndex).dataTable, "", dialog.value, dialog.annotation, dialog.nowDate + " " + dialog.nowTime)
 
                 valuelogger.deactivate()
             })

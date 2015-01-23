@@ -30,7 +30,7 @@ public:
     Q_INVOKABLE void deleteParameterEntry(QString parameterName, QString datatable);
     Q_INVOKABLE QVariantList readParameters();
     Q_INVOKABLE QVariantList readData(QString table);
-    Q_INVOKABLE QString addData(QString table, QString key, QString value, QString timestamp);
+    Q_INVOKABLE QString addData(QString table, QString key, QString value, QString annotation, QString timestamp);
     Q_INVOKABLE void deleteData(QString table, QString key);
 
     Q_INVOKABLE QString colorToString(QColor color) { return color.name(); }
