@@ -62,8 +62,6 @@ Dialog
         contentHeight: col.height
         width: parent.width
 
-        VerticalScrollDecorator { flickable: flick }
-
         DialogHeader
         {
             id: dialogHeader

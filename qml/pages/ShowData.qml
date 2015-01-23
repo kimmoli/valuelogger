@@ -16,16 +16,17 @@ Page
     {
         console.log("test " +s)
     }
-
     PageHeader
     {
         id: pageHeader
         title: parName
     }
 
-    ListView
+    SilicaListView
     {
         id: dataListView
+
+        VerticalScrollDecorator { flickable: dataListView }
 
         model: dataList
 
