@@ -345,7 +345,7 @@ void Logger::exportToCSV()
         {
             QVariantMap eDataData = n.next().value<QVariantMap>();
 
-            out << eDataData["timestamp"].toString() << separator << eDataData["value"].toString().replace('.', loc.decimalPoint()) << eDataData["annotation"].toString() << "\n";
+            out << eDataData["timestamp"].toString() << separator << eDataData["value"].toString().replace('.', loc.decimalPoint()) << separator << "\"" << eDataData["annotation"].toString() << "\"\n";
         }
     }
     out.flush();
