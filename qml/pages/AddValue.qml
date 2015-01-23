@@ -54,153 +54,156 @@ Dialog
         }
     }
 
-    DialogHeader
+    SilicaFlickable
     {
-        id: pageHeader
-        title: pageTitle + qsTr(" value")
-        acceptText: pageTitle
-        cancelText: qsTr("Cancel")
-    }
+        id: flick
 
-    Column
-    {
-        id: col
-        spacing: Theme.paddingSmall
-        width: addValuePage.width
-        anchors.top: pageHeader.bottom
+        anchors.fill: parent
+        contentHeight: col.height
+        width: parent.width
 
-        Label
+        VerticalScrollDecorator { flickable: flick }
+
+        DialogHeader
         {
-            text: parameterName
-            width: parent.width
-            x: Theme.paddingLarge
-            font.bold: true
-        }
-        Label
-        {
-            text: parameterDescription
-            width: parent.width
-            x: Theme.paddingLarge
-            color: Theme.secondaryColor
+            id: dialogHeader
+            title: pageTitle + qsTr(" value")
+            acceptText: pageTitle
+            cancelText: qsTr("Cancel")
         }
 
-        SectionHeader
+        Column
         {
-            text: qsTr("Timestamp")
-        }
-
-        Row
-        {
-            x: Theme.paddingLarge
-            width: parent.width - 2*Theme.paddingLarge
+            id: col
+            spacing: Theme.paddingSmall
+            width: addValuePage.width
 
             Label
             {
-                id: dateNow
-                text: "unknown"
-                width: parent.width - modifyDateButton.width - modifyTimeButton.width
-                anchors.verticalCenter: parent.verticalCenter
+                text: parameterName
+                width: parent.width
+                x: Theme.paddingLarge
+                font.bold: true
             }
-
-            IconButton
+            Label
             {
-                id: modifyDateButton
-                anchors.verticalCenter: parent.verticalCenter
-                icon.source: "image://theme/icon-lock-calendar"
-                onClicked:
-                {
-                    console.log("modifyDateButton clicked")
-
-                    var dialogDate = pageStack.push(pickerDate, { date: new Date(nowDate) })
-                           dialogDate.accepted.connect(function()
-                           {
-                               console.log("You chose: " + dialogDate.dateText)
-                               // use date, as dateText return varies
-                               var d = dialogDate.date
-                               updateDateTime(Qt.formatDateTime(new Date(d), "yyyy-MM-dd"), nowTime)
-                           })
-                }
-                Component
-                {
-                    id: pickerDate
-                    DatePickerDialog {}
-                }
-
+                text: parameterDescription
+                width: parent.width
+                x: Theme.paddingLarge
+                color: Theme.secondaryColor
             }
-            IconButton
+
+            SectionHeader
             {
-                id: modifyTimeButton
-                anchors.verticalCenter: parent.verticalCenter
-                icon.source: "image://theme/icon-m-time-date"
-                onClicked:
+                text: qsTr("Timestamp")
+            }
+
+            Row
+            {
+                x: Theme.paddingLarge
+                width: parent.width - 2*Theme.paddingLarge
+
+                Label
                 {
-                    console.log("modifyTimeButton clicked")
-
-                    console.log("hour " + Qt.formatDateTime(new Date(nowDate + " " + nowTime), "hh"))
-                    console.log("minute " + Qt.formatDateTime(new Date(nowDate + " " + nowTime), "mm"))
-
-                    var dialogTime = pageStack.push(pickerTime, {
-                                                        hour: Qt.formatDateTime(new Date(nowDate + " " + nowTime), "hh"),
-                                                        minute: Qt.formatDateTime(new Date(nowDate + " " + nowTime), "mm")})
-                          dialogTime.accepted.connect(function()
-                          {
-                              console.log("You chose: " + dialogTime.timeText)
-
-                              updateDateTime(nowDate, dialogTime.timeText + ":00")
-                          })
-
-                }
-                Component
-                {
-                    id: pickerTime
-                    TimePickerDialog {}
+                    id: dateNow
+                    text: "unknown"
+                    width: parent.width - modifyDateButton.width - modifyTimeButton.width
+                    anchors.verticalCenter: parent.verticalCenter
                 }
 
+                IconButton
+                {
+                    id: modifyDateButton
+                    anchors.verticalCenter: parent.verticalCenter
+                    icon.source: "image://theme/icon-lock-calendar"
+                    onClicked:
+                    {
+                        console.log("modifyDateButton clicked")
+
+                        var dialogDate = pageStack.push(pickerDate, { date: new Date(nowDate) })
+                               dialogDate.accepted.connect(function()
+                               {
+                                   console.log("You chose: " + dialogDate.dateText)
+                                   // use date, as dateText return varies
+                                   var d = dialogDate.date
+                                   updateDateTime(Qt.formatDateTime(new Date(d), "yyyy-MM-dd"), nowTime)
+                               })
+                    }
+                    Component
+                    {
+                        id: pickerDate
+                        DatePickerDialog {}
+                    }
+
+                }
+                IconButton
+                {
+                    id: modifyTimeButton
+                    anchors.verticalCenter: parent.verticalCenter
+                    icon.source: "image://theme/icon-m-time-date"
+                    onClicked:
+                    {
+                        console.log("modifyTimeButton clicked")
+
+                        console.log("hour " + Qt.formatDateTime(new Date(nowDate + " " + nowTime), "hh"))
+                        console.log("minute " + Qt.formatDateTime(new Date(nowDate + " " + nowTime), "mm"))
+
+                        var dialogTime = pageStack.push(pickerTime, {
+                                                            hour: Qt.formatDateTime(new Date(nowDate + " " + nowTime), "hh"),
+                                                            minute: Qt.formatDateTime(new Date(nowDate + " " + nowTime), "mm")})
+                              dialogTime.accepted.connect(function()
+                              {
+                                  console.log("You chose: " + dialogTime.timeText)
+
+                                  updateDateTime(nowDate, dialogTime.timeText + ":00")
+                              })
+
+                    }
+                    Component
+                    {
+                        id: pickerTime
+                        TimePickerDialog {}
+                    }
+
+                }
+            }
+
+            SectionHeader
+            {
+                text: qsTr("Value")
+            }
+
+            TextField
+            {
+                id: valueField
+                focus: true
+                width: parent.width
+                label: qsTr("Value")
+                font.pixelSize: Theme.fontSizeExtraLarge
+                color: Theme.primaryColor
+                placeholderText: qsTr("Enter new value here")
+                onTextChanged: addValuePage.canAccept = text.length > 0
+                inputMethodHints: Qt.ImhDigitsOnly
+                validator: RegExpValidator { regExp: /-?\d+([,|\.]?\d+)?/ }
+                EnterKey.enabled: text.length > 0
+                EnterKey.iconSource: "image://theme/icon-m-enter-next"
+                EnterKey.onClicked: annotationField.focus = true
+            }
+
+            TextField
+            {
+                id: annotationField
+                focus: false
+                width: parent.width
+                label: qsTr("Annotation")
+                font.pixelSize: Theme.fontSizeExtraLarge
+                color: Theme.primaryColor
+                placeholderText: qsTr("Enter annotation here")
+                EnterKey.enabled: valueField.text.length > 0
+                EnterKey.iconSource: "image://theme/icon-m-enter-accept"
+                EnterKey.onClicked: addValuePage.accept()
+                onFocusChanged: if (focus) scrollToBottom()
             }
         }
-
-        SectionHeader
-        {
-            text: qsTr("Value")
-        }
-
-        TextField
-        {
-            id: valueField
-            focus: true
-            width: parent.width
-            label: qsTr("Value")
-            font.pixelSize: Theme.fontSizeExtraLarge
-            color: Theme.primaryColor
-            placeholderText: qsTr("Enter new value here")
-            onTextChanged: addValuePage.canAccept = text.length > 0
-            inputMethodHints: Qt.ImhDigitsOnly
-            validator: RegExpValidator { regExp: /-?\d+([,|\.]?\d+)?/ }
-            EnterKey.enabled: text.length > 0
-            EnterKey.iconSource: "image://theme/icon-m-enter-next"
-            EnterKey.onClicked: annotationField.focus = true
-        }
-
-        SectionHeader
-        {
-            text: qsTr("Annotation")
-        }
-
-        TextField
-        {
-            id: annotationField
-            focus: false
-            width: parent.width
-            label: qsTr("Annotation")
-            font.pixelSize: Theme.fontSizeExtraLarge
-            color: Theme.primaryColor
-            placeholderText: qsTr("Enter annotation here")
-            EnterKey.iconSource: "image://theme/icon-m-enter-accept"
-            EnterKey.onClicked: addValuePage.accept()
-        }
-
-
     }
-
-
 }
