@@ -123,9 +123,16 @@ void Logger::createParameterTable()
 
 QString Logger::addData(QString table, QString key, QString value, QString annotation, QString timestamp)
 {
-    qDebug() << "Adding " << value << " (" << timestamp << ") to " << table;
+    qDebug() << "Adding " << value << " (" << timestamp << ") " << annotation << " to " << table;
 
     QString objHash = ( (key.length() > 0) ? key : generateHash(value));
+
+    QSqlQuery addColQuery;
+
+    if (addColQuery.exec("ALTER TABLE _" + table + " ADD COLUMN annotation TEXT"))
+        qDebug() << "coiumn added succesfully";
+    else
+        qDebug() << "coiumn add failed";
 
     QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO _" + table + " (key,timestamp,value,annotation) VALUES (?,?,?,?)", *db);
 
