@@ -78,39 +78,44 @@ Page
                 })
             }
 
-            Column
+            Row
             {
+                id: itemRow
                 anchors.verticalCenter: parent.verticalCenter
-                spacing: Theme.paddingSmall
-                Row
-                {
-                    x: Theme.paddingMedium
-                    width: parent.width - 3*Theme.paddingMedium
-                    spacing: width - timestampLabel.width - valueLabel.width
+                spacing: width - annotationLabel.width - valueLabel.width
+                x: Theme.paddingMedium
+                width: parent.width - 3*Theme.paddingMedium
+                height: Theme.itemSizeMedium
 
+                Column
+                {
+                    anchors.verticalCenter: parent.verticalCenter
                     Label
                     {
                         id: timestampLabel
-                        anchors.verticalCenter: parent.verticalCenter
                         text: timestamp
                     }
                     Label
                     {
-                        id: valueLabel
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: value
-                        horizontalAlignment: Text.AlignRight
-                        font.pixelSize: Theme.fontSizeExtraLarge
+                        id: annotationLabel
+                        x: Theme.paddingSmall
+                        text: annotation
+                        width: showDataPage.width - valueLabel.width - 3*Theme.paddingMedium
+                        truncationMode: TruncationMode.Fade
+                        font.italic: true
+                        horizontalAlignment: Text.AlignLeft
+                        font.pixelSize: Theme.fontSizeSmall
                     }
                 }
                 Label
                 {
-                    id: annotationLabel
-                    x: Theme.paddingMedium
-                    text: annotation
-                    horizontalAlignment: Text.AlignLeft
-                    font.pixelSize: Theme.fontSizeSmall
+                    id: valueLabel
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: value
+                    horizontalAlignment: Text.AlignRight
+                    font.pixelSize: Theme.fontSizeExtraLarge
                 }
+
             }
 
             Component
