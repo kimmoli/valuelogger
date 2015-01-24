@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "../components"
 
 Page
 {
@@ -28,6 +29,11 @@ Page
         } )
     }
 
+    Messagebox
+    {
+        id: messagebox
+    }
+
     SilicaFlickable
     {
         anchors.fill: parent
@@ -47,7 +53,10 @@ Page
             MenuItem
             {
                 text: qsTr("Export to CSV")
-                onClicked: logger.exportToCSV()
+                onClicked:
+                {
+                    messagebox.showMessage(qsTr("Exported to:") + "<br>" + logger.exportToCSV(), 2500)
+                }
             }
         }
 

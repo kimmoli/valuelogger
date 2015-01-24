@@ -41,7 +41,8 @@ OTHER_FILES += qml/valuelogger.qml \
     i18n/translations_fi.ts \
     i18n/translations_sv.ts \
     qml/icon-cover-plot.png \
-    qml/pages/AddPair.qml
+    qml/pages/AddPair.qml \
+    qml/components/Messagebox.qml
 
 TRANSLATIONS += i18n/translations_fi.ts \
                 i18n/translations_sv.ts

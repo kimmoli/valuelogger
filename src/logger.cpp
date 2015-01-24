@@ -336,7 +336,7 @@ void Logger::closeDatabase()
  * Export to CSV file
  */
 
-void Logger::exportToCSV()
+QString Logger::exportToCSV()
 {
     qDebug() << "Exporting";
 
@@ -376,6 +376,7 @@ void Logger::exportToCSV()
 
     file.close();
 
+    return filename;
 }
 
 Logger::~Logger()
