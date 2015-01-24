@@ -131,7 +131,7 @@ Page
                 function pairParameter()
                 {
                     var dialog = pageStack.push(Qt.resolvedUrl("AddPair.qml"),
-                                                {"pairFirst": parName,
+                                                {"pairFirstTable": dataTable,
                                                  "pairSecondTable": pairedTable})
 
                     dialog.accepted.connect(function()

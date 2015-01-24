@@ -5,7 +5,7 @@ Dialog
 {
     id: addPairPage
 
-    property string pairFirst: ""
+    property string pairFirstTable: ""
     property string pairSecondTable: ""
 
     DialogHeader
@@ -30,7 +30,7 @@ Dialog
         {
             id: parameterItem
             property bool highlighted: dataTable === pairSecondTable
-            enabled: parName !== pairFirst
+            enabled: dataTable !== pairFirstTable
             height: Theme.itemSizeMedium
             width: parent.width
 
