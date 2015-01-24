@@ -26,12 +26,13 @@ public:
 
     QString readVersion();
 
-    Q_INVOKABLE QString addParameterEntry(QString key, QString parameterName, QString parameterDescription, bool visualize, QColor plotColor);
+    Q_INVOKABLE QString addParameterEntry(QString key, QString parameterName, QString parameterDescription, bool visualize, QColor plotColor, QString pairedtable);
     Q_INVOKABLE void deleteParameterEntry(QString parameterName, QString datatable);
     Q_INVOKABLE QVariantList readParameters();
     Q_INVOKABLE QVariantList readData(QString table);
     Q_INVOKABLE QString addData(QString table, QString key, QString value, QString annotation, QString timestamp);
     Q_INVOKABLE void deleteData(QString table, QString key);
+    Q_INVOKABLE void setPairedTable(QString datatable, QString pairedtable);
 
     Q_INVOKABLE QString colorToString(QColor color) { return color.name(); }
 

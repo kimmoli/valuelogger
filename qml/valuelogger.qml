@@ -45,6 +45,51 @@ ApplicationWindow
                                             {"parameterName": parameterList.get(lastDataAddedIndex).parName,
                                              "parameterDescription": parameterList.get(lastDataAddedIndex).parDescription })
 
+            if (parameterList.get(lastDataAddedIndex).pairedTable !== "")
+            {
+                console.log("this is a paired parameter")
+                var paired_parName = "ERROR"
+                var paired_parDescription = "ERROR"
+
+                for (var i=0; i<parameterList.count; i++)
+                {
+                    var tmp = parameterList.get(i)
+                    if (tmp.dataTable === parameterList.get(lastDataAddedIndex).pairedTable)
+                    {
+                        paired_parName = tmp.parName
+                        paired_parDescription = tmp.parDescription
+                        console.log("found " + tmp.parName + " " + tmp.parDescription)
+                        break
+                    }
+                }
+
+                var pairdialog = pageStack.pushAttached(Qt.resolvedUrl("pages/AddValue.qml"),
+                                           {"nowDate": dialog.nowDate,
+                                            "nowTime": dialog.nowTime,
+                                            "parameterName": paired_parName,
+                                            "parameterDescription": paired_parDescription,
+                                            "paired": true})
+
+                pairdialog.accepted.connect(function()
+                {
+                    console.log("paired dialog accepted")
+                    console.log(" value is " + pairdialog.value)
+                    console.log(" annotation is " + pairdialog.annotation)
+                    console.log(" date is " + pairdialog.nowDate)
+                    console.log(" time is " + pairdialog.nowTime)
+
+                    logger.addData(parameterList.get(lastDataAddedIndex).pairedTable, "", pairdialog.value, pairdialog.annotation, pairdialog.nowDate + " " + pairdialog.nowTime)
+
+                    valuelogger.deactivate()
+                })
+                pairdialog.rejected.connect(function()
+                {
+                    console.log("Dialog rejected")
+                    valuelogger.deactivate()
+                })
+
+            }
+
             dialog.accepted.connect(function()
             {
                 console.log("dialog accepted")
@@ -55,7 +100,8 @@ ApplicationWindow
 
                 logger.addData(parameterList.get(lastDataAddedIndex).dataTable, "", dialog.value, dialog.annotation, dialog.nowDate + " " + dialog.nowTime)
 
-                valuelogger.deactivate()
+                if (parameterList.get(lastDataAddedIndex).pairedTable === "")
+                    valuelogger.deactivate()
             })
             dialog.rejected.connect(function()
             {
@@ -105,6 +151,7 @@ ApplicationWindow
                                          "parDescription": tmp[i]["description"],
                                          "plotcolor": tmp[i]["plotcolor"],
                                          "dataTable": tmp[i]["datatable"],
+                                         "pairedTable": tmp[i]["pairedtable"],
                                          "visualize": (tmp[i]["visualize"] == 1 ? true : false),
                                          "visualizeChanged": false})
             }

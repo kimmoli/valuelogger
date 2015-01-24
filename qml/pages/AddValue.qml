@@ -14,6 +14,7 @@ Dialog
     property string annotation: "annotation"
     property string nowDate: "value"
     property string nowTime: "value"
+    property bool paired: false
 
     Component.onCompleted:
     {
@@ -27,9 +28,9 @@ Dialog
         else
         {
             updateDateTime(nowDate, nowTime)
-            valueField.text = value
-            annotationField.text = annotation
-            pageTitle = qsTr("Edit")
+            valueField.text = (value == "value") ? "" : value
+            annotationField.text = (value == "value") ? "" : annotation
+            pageTitle = (value == "value") ? qsTr("Add") : qsTr("Edit")
         }
     }
 
@@ -62,32 +63,46 @@ Dialog
         contentHeight: col.height
         width: parent.width
 
-        DialogHeader
-        {
-            id: dialogHeader
-            acceptText: pageTitle + qsTr(" value")
-            cancelText: qsTr("Cancel")
-        }
+        VerticalScrollDecorator { flickable: flick }
 
         Column
         {
             id: col
             spacing: Theme.paddingSmall
+            anchors.top: dialogHeader.bottom
             width: addValuePage.width
 
-            Label
+            DialogHeader
             {
-                text: parameterName
-                width: parent.width
-                x: Theme.paddingLarge
-                font.bold: true
+                id: dialogHeader
+                acceptText: pageTitle + qsTr(" value")
+                cancelText: qsTr("Cancel")
             }
-            Label
+
+            Row
             {
-                text: parameterDescription
-                width: parent.width
                 x: Theme.paddingLarge
-                color: Theme.secondaryColor
+                Image
+                {
+                    id: pairIcon
+                    source: "image://theme/icon-m-link"
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: paired
+                }
+                Column
+                {
+                    anchors.verticalCenter: parent.verticalCenter
+                    Label
+                    {
+                        text: parameterName
+                        font.bold: true
+                    }
+                    Label
+                    {
+                        text: parameterDescription
+                        color: Theme.secondaryColor
+                    }
+                }
             }
 
             SectionHeader
@@ -187,6 +202,11 @@ Dialog
                 EnterKey.onClicked: annotationField.focus = true
             }
 
+            SectionHeader
+            {
+                text: qsTr("Annotation")
+            }
+
             TextField
             {
                 id: annotationField
@@ -199,7 +219,7 @@ Dialog
                 EnterKey.enabled: valueField.text.length > 0
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"
                 EnterKey.onClicked: addValuePage.accept()
-                onFocusChanged: if (focus) scrollToBottom()
+                onFocusChanged: if (focus) flick.scrollToBottom()
             }
         }
     }

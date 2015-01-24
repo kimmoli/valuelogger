@@ -106,7 +106,7 @@ void Logger::createParameterTable()
 {
     QSqlQuery query;
 
-    if (query.exec("CREATE TABLE IF NOT EXISTS parameters (parameter TEXT, description TEXT, visualize INTEGER, plotcolor TEXT, datatable TEXT PRIMARY KEY)"))
+    if (query.exec("CREATE TABLE IF NOT EXISTS parameters (parameter TEXT, description TEXT, visualize INTEGER, plotcolor TEXT, datatable TEXT PRIMARY KEY, pairedtable TEXT)"))
     {
         qDebug() << "parameter table created";
     }
@@ -114,6 +114,29 @@ void Logger::createParameterTable()
     {
         qDebug() << "parameter table not created : " << query.lastError();
     }
+}
+
+/*
+ * Set paired table
+ */
+void Logger::setPairedTable(QString datatable, QString pairedtable)
+{
+    QSqlQuery addColQuery;
+
+    if (addColQuery.exec("ALTER TABLE parameters ADD COLUMN pairedtable TEXT"))
+        qDebug() << "column pairedtable added succesfully";
+
+    QSqlQuery query = QSqlQuery(QString("UPDATE parameters SET pairedtable='%1' WHERE datatable='%2'").arg(pairedtable).arg(datatable), *db);
+
+    if (query.exec())
+    {
+        qDebug() << "paired table added " << datatable << " -- " << pairedtable;
+    }
+    else
+    {
+        qDebug() << "paired table failed " << datatable << " -- " << pairedtable << " : " << query.lastError();
+    }
+
 }
 
 /*
@@ -130,9 +153,7 @@ QString Logger::addData(QString table, QString key, QString value, QString annot
     QSqlQuery addColQuery;
 
     if (addColQuery.exec("ALTER TABLE _" + table + " ADD COLUMN annotation TEXT"))
-        qDebug() << "coiumn added succesfully";
-    else
-        qDebug() << "coiumn add failed";
+        qDebug() << "column annotation added succesfully";
 
     QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO _" + table + " (key,timestamp,value,annotation) VALUES (?,?,?,?)", *db);
 
@@ -221,6 +242,7 @@ QVariantList Logger::readParameters()
             map.insert("plotcolor", query.record().value("plotcolor").toString());
             map.insert("datatable", query.record().value("datatable").toString());
             map.insert("name", query.record().value("parameter").toString());
+            map.insert("pairedtable", query.record().value("pairedtable").toString());
             tmp.append(map);
         }
     }
@@ -250,19 +272,21 @@ QString Logger::generateHash(QString sometext)
  * datatable name is md5 of timestamp + random number
  */
 
-QString Logger::addParameterEntry(QString key, QString parameterName, QString parameterDescription, bool visualize, QColor plotColor)
+QString Logger::addParameterEntry(QString key, QString parameterName, QString parameterDescription, bool visualize, QColor plotColor, QString pairedtable)
 {
     qDebug() << "Adding entry: " << parameterName << " - " << parameterDescription << " color " << plotColor;
 
     QString objHash = ( (key.length() > 0) ? key : generateHash(parameterName));
 
-    QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO parameters (parameter,description,visualize,plotcolor,datatable) VALUES (?,?,?,?,?)", *db);
+    QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO parameters (parameter,description,visualize,plotcolor,datatable,pairedtable) VALUES (?,?,?,?,?,?)", *db);
 
     query.addBindValue(parameterName);
     query.addBindValue(parameterDescription);
     query.addBindValue(visualize ? 1:0 ); // store bool as integer
     query.addBindValue(plotColor.name());
     query.addBindValue(objHash);
+    query.addBindValue(pairedtable);
+
 
     if (query.exec())
     {

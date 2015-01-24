@@ -16,13 +16,14 @@ Page
             console.log(dialog.parameterDescription)
             console.log(dialog.plotColor)
 
-            var datatable = logger.addParameterEntry("", dialog.parameterName, dialog.parameterDescription, true, dialog.plotColor)
+            var datatable = logger.addParameterEntry("", dialog.parameterName, dialog.parameterDescription, true, dialog.plotColor, "")
 
             parameterList.append({"parName": dialog.parameterName,
                                   "parDescription": dialog.parameterDescription,
                                   "visualize": true,
                                   "plotcolor": logger.colorToString(dialog.plotColor),
                                   "dataTable": datatable,
+                                  "pairedTable": "",
                                   "visualizeChanged": false})
         } )
     }
@@ -119,11 +120,26 @@ Page
                         console.log(dialog.parameterDescription)
                         console.log(dialog.plotColor)
 
-                        logger.addParameterEntry(dataTable, dialog.parameterName, dialog.parameterDescription, visualize, dialog.plotColor)
+                        logger.addParameterEntry(dataTable, dialog.parameterName, dialog.parameterDescription, visualize, dialog.plotColor, pairedTable)
 
                         parameters.model.setProperty(index, "parName", dialog.parameterName)
                         parameters.model.setProperty(index, "parDescription", dialog.parameterDescription)
                         parameters.model.setProperty(index, "plotcolor", logger.colorToString(dialog.plotColor))
+                    } )
+                }
+
+                function pairParameter()
+                {
+                    var dialog = pageStack.push(Qt.resolvedUrl("AddPair.qml"),
+                                                {"pairFirst": parName,
+                                                 "pairSecondTable": pairedTable})
+
+                    dialog.accepted.connect(function()
+                    {
+                        console.log("Add pair dialog accepted")
+                        console.log(dialog.pairSecondTable)
+                        logger.setPairedTable(dataTable, dialog.pairSecondTable)
+                        parameters.model.setProperty(index, "pairedTable", dialog.pairSecondTable)
                     } )
                 }
 
@@ -145,7 +161,7 @@ Page
                     Column
                     {
                         anchors.verticalCenter: parent.verticalCenter
-                        width: parent.width - parSwitch.width - addValueButton.width
+                        width: parent.width - parSwitch.width - addValueButton.width - pairIcon.width
                         Label
                         {
                             id: parNameLabel
@@ -158,6 +174,15 @@ Page
                             font.pixelSize: Theme.fontSizeSmall
                             color: parameterItem.highlighted ? Theme.highlightColor : Theme.secondaryColor
                         }
+                    }
+                    Image
+                    {
+                        id: pairIcon
+                        source: "image://theme/icon-m-link"
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 48
+                        height: 48
+                        opacity: (pairedTable === "") ? 0.0 : 0.9
                     }
 
                     IconButton
@@ -174,6 +199,44 @@ Page
                             var dialog = pageStack.push(Qt.resolvedUrl("AddValue.qml"),
                                                         {"parameterName": parName,
                                                          "parameterDescription": parDescription })
+
+                            if (pairedTable !== "")
+                            {
+                                console.log("this is a paired parameter")
+                                var paired_parName = "ERROR"
+                                var paired_parDescription = "ERROR"
+
+                                for (var i=0; i<parameterList.count; i++)
+                                {
+                                    var tmp = parameterList.get(i)
+                                    if (tmp.dataTable === pairedTable)
+                                    {
+                                        paired_parName = tmp.parName
+                                        paired_parDescription = tmp.parDescription
+                                        console.log("found " + tmp.parName + " " + tmp.parDescription)
+                                        break
+                                    }
+                                }
+
+                                var pairdialog = pageStack.pushAttached(Qt.resolvedUrl("AddValue.qml"),
+                                                           {"nowDate": dialog.nowDate,
+                                                            "nowTime": dialog.nowTime,
+                                                            "parameterName": paired_parName,
+                                                            "parameterDescription": paired_parDescription,
+                                                            "paired": true})
+
+                                pairdialog.accepted.connect(function()
+                                {
+                                    console.log("paired dialog accepted")
+                                    console.log(" value is " + pairdialog.value)
+                                    console.log(" annotation is " + pairdialog.annotation)
+                                    console.log(" date is " + pairdialog.nowDate)
+                                    console.log(" time is " + pairdialog.nowTime)
+
+                                    logger.addData(pairedTable, "", pairdialog.value, pairdialog.annotation, pairdialog.nowDate + " " + pairdialog.nowTime)
+
+                                })
+                            }
 
                             dialog.accepted.connect(function()
                             {
@@ -227,6 +290,12 @@ Page
 
                         MenuItem
                         {
+                            text: qsTr("Pair")
+                            onClicked: pairParameter()
+                        }
+
+                        MenuItem
+                        {
                             text: qsTr("Remove")
                             onClicked: remove()
                         }
@@ -261,7 +330,8 @@ Page
                                                  parameterList.get(a).parName,
                                                  parameterList.get(a).parDescription,
                                                  parameterList.get(a).visualize,
-                                                 parameterList.get(a).plotcolor)
+                                                 parameterList.get(a).plotcolor,
+                                                 parameterList.get(a).pairedTable)
 
                     if (parameterList.get(a).visualize)
                     {
