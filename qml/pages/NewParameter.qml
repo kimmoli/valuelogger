@@ -24,80 +24,88 @@ Dialog
         }
     }
 
-    DialogHeader
+
+    SilicaFlickable
     {
-        id: pageHeader
-        title: pageTitle + qsTr(" parameter")
-        acceptText: pageTitle
-        cancelText: qsTr("Cancel")
-    }
+        id: flick
 
-    Column
-    {
-        id: col
-        spacing: Theme.paddingLarge
-        width: newParamaterPage.width
-        anchors.top: pageHeader.bottom
+        anchors.fill: parent
+        contentHeight: col.height
+        width: parent.width
 
-        TextField
-        {
-            id: parNameField
-            focus: true
-            width: parent.width
-            label: qsTr("Parameter name")
-            text: parameterName
-            placeholderText: qsTr("Enter parameter name here")
-            onTextChanged: newParamaterPage.canAccept = text.length > 0
-            EnterKey.enabled: text.length > 0
-            EnterKey.iconSource: "image://theme/icon-m-enter-next"
-            EnterKey.onClicked: parDescField.focus = true
-        }
-        TextField
-        {
-            id: parDescField
-            width: parent.width
-            label: qsTr("Description")
-            text: parameterDescription
-            placeholderText: qsTr("Enter short description here")
-            EnterKey.enabled: true
-            EnterKey.iconSource: "image://theme/icon-m-enter-next"
-            EnterKey.onClicked: parNameField.focus = true
-        }
-        SectionHeader
-        {
-            text: qsTr("Plot color")
-        }
+        VerticalScrollDecorator { flickable: flick }
 
-        Row
+        Column
         {
-            anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 50
+            id: col
+            spacing: Theme.paddingLarge
+            width: newParamaterPage.width
 
-            Rectangle
+            DialogHeader
             {
-                id: plotColorLegend
-                height: 50
-                width: 50
-                color: plotColor
+                id: pageHeader
+                acceptText: pageTitle + qsTr(" parameter")
+                cancelText: qsTr("Cancel")
             }
 
-            Button
+            TextField
             {
-                text: qsTr("Change")
-                anchors.verticalCenter: plotColorLegend.verticalCenter
-                onClicked:
+                id: parNameField
+                focus: true
+                width: parent.width
+                label: qsTr("Parameter name")
+                text: parameterName
+                placeholderText: qsTr("Enter parameter name here")
+                onTextChanged: newParamaterPage.canAccept = text.length > 0
+                EnterKey.enabled: text.length > 0
+                EnterKey.iconSource: "image://theme/icon-m-enter-next"
+                EnterKey.onClicked: parDescField.focus = true
+            }
+            TextField
+            {
+                id: parDescField
+                width: parent.width
+                label: qsTr("Description")
+                text: parameterDescription
+                placeholderText: qsTr("Enter short description here")
+                EnterKey.enabled: true
+                EnterKey.iconSource: "image://theme/icon-m-enter-next"
+                EnterKey.onClicked: parNameField.focus = true
+            }
+            SectionHeader
+            {
+                text: qsTr("Plot color")
+            }
+
+            Row
+            {
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 50
+
+                Rectangle
                 {
-                    var dialog = pageStack.push("Sailfish.Silica.ColorPickerDialog", { "colors": plotColors })
-                    dialog.accepted.connect(function()
+                    id: plotColorLegend
+                    height: 50
+                    width: 50
+                    color: plotColor
+                }
+
+                Button
+                {
+                    text: qsTr("Change")
+                    anchors.verticalCenter: plotColorLegend.verticalCenter
+                    onClicked:
                     {
-                        console.log("Changed color to " + dialog.color)
-                        plotColorLegend.color = dialog.color
-                        plotColor = dialog.color
-                    })
+                        var dialog = pageStack.push("Sailfish.Silica.ColorPickerDialog", { "colors": plotColors })
+                        dialog.accepted.connect(function()
+                        {
+                            console.log("Changed color to " + dialog.color)
+                            plotColorLegend.color = dialog.color
+                            plotColor = dialog.color
+                        })
+                    }
                 }
             }
         }
     }
-
-
 }
