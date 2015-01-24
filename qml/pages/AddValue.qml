@@ -65,8 +65,7 @@ Dialog
         DialogHeader
         {
             id: dialogHeader
-            title: pageTitle + qsTr(" value")
-            acceptText: pageTitle
+            acceptText: pageTitle + qsTr(" value")
             cancelText: qsTr("Cancel")
         }
 
