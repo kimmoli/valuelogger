@@ -108,6 +108,17 @@ Page
                 {
                     remorseAction(qsTr("Deleting"), function()
                     {
+                        // remove this from parameters where it is paired to
+                        for (var i=0 ; i<parameters.model.count; i++)
+                        {
+                            var tmp = parameters.model.get(i)
+                            if (tmp.pairedTable === dataTable)
+                            {
+                                parameters.model.setProperty(i, "pairedTable", "")
+                                logger.setPairedTable(tmp.dataTable, "")
+                            }
+                        }
+
                         logger.deleteParameterEntry(parName, dataTable)
                         parameters.model.remove(index)
                         lastDataAddedIndex = -1
