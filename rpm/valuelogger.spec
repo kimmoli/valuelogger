@@ -24,6 +24,7 @@ BuildRequires:  pkgconfig(sailfishapp) >= 0.0.10
 BuildRequires:  pkgconfig(Qt5DBus)
 BuildRequires:  pkgconfig(Qt5Positioning)
 BuildRequires:  desktop-file-utils
+BuildRequires:  qt5-qttools-linguist
 
 Obsoletes:  harbour-valuelogger
 
@@ -51,11 +52,8 @@ desktop-file-install --delete-original       \
 %files
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}
-%{_datadir}/%{name}/qml
-%{_datadir}/applications/%{name}.desktop
-%{_datadir}/icons/hicolor/86x86/apps/%{name}.png
-/usr/bin
-/usr/share/harbour-valuelogger
-/usr/share/applications
-/usr/share/icons/hicolor/86x86/apps
-
+%{_datadir}/%{name}/
+%{_datadir}/%{name}/qml/
+%{_datadir}/%{name}/i18n/
+%{_datadir}/applications/
+%{_datadir}/icons/hicolor/86x86/apps/
