@@ -9,8 +9,8 @@ Name:       harbour-valuelogger
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Value Logger
-Version:    0.4.1
-Release:    1
+Version:    0.5.0
+Release:    devel
 Group:      Qt/Qt
 License:    LICENSE
 URL:        http://example.org/
@@ -24,6 +24,8 @@ BuildRequires:  pkgconfig(sailfishapp) >= 0.0.10
 BuildRequires:  pkgconfig(Qt5DBus)
 BuildRequires:  pkgconfig(Qt5Positioning)
 BuildRequires:  desktop-file-utils
+
+Obsoletes:  harbour-valuelogger
 
 %description
 Simple application to log different data from user input, e.g. weight, blood pressure, anything
