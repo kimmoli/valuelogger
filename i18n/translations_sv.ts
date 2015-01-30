@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="sv_SE">
+<TS version="2.0" language="sv_SE">
 <context>
     <name>AboutPage</name>
     <message>
@@ -19,17 +19,17 @@
     <message>
         <location filename="../qml/pages/AddPair.qml" line="14"/>
         <source>Clear pair</source>
-        <translation type="unfinished"></translation>
+        <translation>Rensa par</translation>
     </message>
     <message>
         <location filename="../qml/pages/AddPair.qml" line="14"/>
         <source>Add pair</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till par</translation>
     </message>
     <message>
         <location filename="../qml/pages/AddPair.qml" line="15"/>
         <source>Cancel</source>
-        <translation type="unfinished">Avbryt</translation>
+        <translation>Avbryt</translation>
     </message>
 </context>
 <context>
@@ -75,12 +75,12 @@
         <location filename="../qml/pages/AddValue.qml" line="207"/>
         <location filename="../qml/pages/AddValue.qml" line="215"/>
         <source>Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Anteckning</translation>
     </message>
     <message>
         <location filename="../qml/pages/AddValue.qml" line="218"/>
         <source>Enter annotation here</source>
-        <translation type="unfinished"></translation>
+        <translation>Anteckna här</translation>
     </message>
 </context>
 <context>
@@ -172,7 +172,7 @@
     <message>
         <location filename="../qml/pages/Valuelogger.qml" line="58"/>
         <source>Exported to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporterad till:</translation>
     </message>
     <message>
         <location filename="../qml/pages/Valuelogger.qml" line="80"/>
@@ -198,7 +198,7 @@
     <message>
         <location filename="../qml/pages/Valuelogger.qml" line="313"/>
         <source>Pair</source>
-        <translation type="unfinished"></translation>
+        <translation>Par</translation>
     </message>
     <message>
         <location filename="../qml/pages/Valuelogger.qml" line="319"/>
