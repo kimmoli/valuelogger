@@ -45,7 +45,7 @@ Page
                 text: qsTr("About...")
                 onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"),
                                           { "version": logger.version,
-                                              "year": "2014",
+                                              "year": "2014-2015",
                                               "name": "Value Logger",
                                               "imagelocation": "/usr/share/icons/hicolor/86x86/apps/harbour-valuelogger.png"} )
             }
