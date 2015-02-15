@@ -9,7 +9,7 @@ Name:       harbour-valuelogger
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Value Logger
-Version:    0.5.1
+Version:    0.5.2
 Release:    devel
 Group:      Qt/Qt
 License:    LICENSE

@@ -276,6 +276,11 @@ QString Logger::addParameterEntry(QString key, QString parameterName, QString pa
 {
     qDebug() << "Adding entry: " << parameterName << " - " << parameterDescription << " color " << plotColor;
 
+    QSqlQuery addColQuery;
+
+    if (addColQuery.exec("ALTER TABLE parameters ADD COLUMN pairedtable TEXT"))
+        qDebug() << "column pairedtable added succesfully";
+
     QString objHash = ( (key.length() > 0) ? key : generateHash(parameterName));
 
     QSqlQuery query = QSqlQuery("INSERT OR REPLACE INTO parameters (parameter,description,visualize,plotcolor,datatable,pairedtable) VALUES (?,?,?,?,?,?)", *db);
