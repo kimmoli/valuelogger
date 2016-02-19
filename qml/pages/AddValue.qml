@@ -27,6 +27,8 @@ Dialog
         }
         else
         {
+            if (nowTime == "")
+                nowTime = "00:00:00"
             updateDateTime(nowDate, nowTime)
             valueField.text = (value == "value") ? "" : value
             annotationField.text = (value == "value") ? "" : annotation
@@ -36,12 +38,12 @@ Dialog
 
     function updateDateTime (newDate, newTime)
     {
+        console.log("newdate " + newDate + " newtime " + newTime)
         nowDate = Qt.formatDateTime(new Date(newDate), "yyyy-MM-dd")
         nowTime = Qt.formatDateTime(new Date(newDate + " " + newTime), "hh:mm:ss")
+        console.log("nowdate " + nowDate + " nowtime " + nowTime)
 
-        console.log("date " + nowDate + " time " + nowTime)
-
-        dateNow.text = Qt.formatDateTime(new Date(nowDate), "dd.MM.yyyy") + " " + Qt.formatDateTime(new Date(nowDate + " " + nowTime), "hh:mm")
+        dateNow.text = Qt.formatDateTime(new Date(nowDate), "dd.MM.yyyy") + " " + Qt.formatDateTime(new Date(nowDate + " " + nowTime), "hh:mm:ss")
 
         console.log("dateNow " + dateNow.text)
     }
@@ -166,8 +168,10 @@ Dialog
                               dialogTime.accepted.connect(function()
                               {
                                   console.log("You chose: " + dialogTime.timeText)
-
-                                  updateDateTime(nowDate, dialogTime.timeText + ":00")
+                                  var tt = dialogTime.timeText + ":00"
+                                  if (dialogTime.hour < 10)
+                                      tt = "0" + tt
+                                  updateDateTime(nowDate, tt)
                               })
 
                     }

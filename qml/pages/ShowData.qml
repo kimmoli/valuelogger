@@ -60,8 +60,8 @@ Page
                                              "parameterDescription": parDescription,
                                              "value": value,
                                              "annotation": annotation,
-                                             "nowDate": Qt.formatDateTime(new Date(timestamp), "yyyy-MM-dd"),
-                                             "nowTime": Qt.formatDateTime(new Date(timestamp), "hh:mm:ss")})
+                                             "nowDate": Qt.formatDateTime(new Date(timestamp.trim()), "yyyy-MM-dd"),
+                                             "nowTime": Qt.formatDateTime(new Date(timestamp.trim()), "h:mm:ss")})
 
                 editDialog.accepted.connect( function()
                 {
