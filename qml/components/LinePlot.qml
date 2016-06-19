@@ -276,7 +276,6 @@ Rectangle
         width: parent.width
         anchors.top: valueMax.bottom
         anchors.bottom: valueMin.top
-        renderTarget: Canvas.FramebufferObject
         antialiasing: true
 
         property int first: 0
