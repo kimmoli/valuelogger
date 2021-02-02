@@ -24,6 +24,7 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import harbour.valuelogger.Logger 1.0
 
 Rectangle
 {
@@ -102,7 +103,6 @@ Rectangle
 
         for (var midIndex=0; midIndex<4; midIndex++)
             valueMiddle.itemAt(midIndex).text = (min+(((max-min) / 5.)*(midIndex+1))).toFixed(2)
-
     }
 
     function updateHorizontalScale()
@@ -265,7 +265,6 @@ Rectangle
             interval: 2000
             running: true
             onTriggered:  legend.opacity = 0.0
-                //PropertyAnimation { duration: 500; target: legend; property: "opacity"; to: 0 }
         }
 
     }
@@ -314,33 +313,6 @@ Rectangle
             ctx.restore();
         }
 
-        function drawPlot(ctx, data, color, column)
-        {
-            ctx.save();
-            ctx.globalAlpha = 1.0;
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-
-            for (var i = 0; i < data.length; i++)
-            {
-                var s = new Date(data[i]["timestamp"])
-                var x = (s.getTime() - xstart)/(xend-xstart);
-                var y = (data[i][column]-min)/(max-min);
-
-                if (i == 0)
-                {
-                    ctx.moveTo(x * canvas.width, (1-y) * canvas.height);
-                }
-                else
-                {
-                    ctx.lineTo(x * canvas.width, (1-y) * canvas.height);
-                }
-            }
-            ctx.stroke();
-            ctx.restore();
-        }
-
         onCanvasSizeChanged: requestPaint();
 
         onPaint:
@@ -370,11 +342,6 @@ Rectangle
 
             updateVerticalScale()
             updateHorizontalScale()
-
-            for (n=0; n<dataListModel.length; n++)
-            {
-                drawPlot(ctx, dataListModel[n], parInfoModel.get(n).plotcolor, column);
-            }
         }
 
         PinchArea
@@ -468,5 +435,20 @@ Rectangle
             }
         }
 
+        Repeater
+        {
+            model: dataListModel
+            delegate: Graph
+            {
+                anchors.fill: parent
+                minValue: min
+                maxValue: max
+                minTime: xstart
+                maxTime: xend
+                data: modelData
+                lineWidth: Math.max(Math.min(Math.round(Theme.paddingSmall/2), width/modelData.length), 2)
+                color: parInfoModel.get(index).plotcolor
+            }
+        }
     }
 }
