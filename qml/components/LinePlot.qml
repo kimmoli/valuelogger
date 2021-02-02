@@ -26,12 +26,11 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import harbour.valuelogger.Logger 1.0
 
-Rectangle
+Item
 {
     id: chart
     width: parent.width
     height: parent.height
-    color: "transparent"
 
     property var dataListModel: null
     property var parInfoModel: null
@@ -101,8 +100,10 @@ Rectangle
         valueMax.text = max.toFixed(2)
         valueMin.text = min.toFixed(2)
 
-        for (var midIndex=0; midIndex<4; midIndex++)
-            valueMiddle.itemAt(midIndex).text = (min+(((max-min) / 5.)*(midIndex+1))).toFixed(2)
+        var n = valueMiddle.count + 1
+        for (var midIndex=0; midIndex<valueMiddle.count; midIndex++) {
+            valueMiddle.itemAt(midIndex).text = (min+(((max-min)/n)*(midIndex+1))).toFixed(2)
+        }
     }
 
     function updateHorizontalScale()
@@ -131,9 +132,32 @@ Rectangle
         xEnd.text = Qt.formatDateTime(xstart, "dd.MM.yyyy hh:mm")
     }
 
-    function update()
+    function updateGraph()
     {
-        canvas.requestPaint()
+        // assign some timestamp which is in range as start/end default for further expanding
+        xstart = new Date(dataListModel[0][0]["timestamp"])
+        xend = new Date(dataListModel[0][0]["timestamp"])
+
+        min = 99999999.9
+        max = -99999999.9
+
+        for (var n=0; n<dataListModel.length; n++)
+            getMinMax(dataListModel[n])
+
+        updateVerticalScale()
+        updateHorizontalScale()
+    }
+
+    onWidthChanged: sizeChangedTimer.restart()
+
+    onHeightChanged: sizeChangedTimer.restart()
+
+    Timer
+    {
+        id: sizeChangedTimer
+        interval: 0
+        repeat: false
+        onTriggered: updateGraph()
     }
 
     Text
@@ -142,7 +166,6 @@ Rectangle
         color: Theme.primaryColor
         font.pixelSize: fontSize
         font.bold: fontBold
-        wrapMode: Text.WordWrap
         anchors.right: parent.right
         anchors.rightMargin: 0
         anchors.top: parent.top
@@ -155,9 +178,7 @@ Rectangle
         color: Theme.primaryColor
         font.pixelSize: fontSize
         font.bold: fontBold
-        wrapMode: Text.WordWrap
         anchors.left: parent.left
-        anchors.leftMargin: 0
         anchors.top: parent.top
         horizontalAlignment: Text.AlignRight
         text: "unk"
@@ -170,9 +191,8 @@ Rectangle
         width: 50
         font.pixelSize: fontSize
         font.bold: fontBold
-        wrapMode: Text.WordWrap
         anchors.left: parent.left
-        anchors.leftMargin: 0
+        anchors.leftMargin: Theme.paddingSmall
         anchors.top: xEnd.bottom
         text: "unk"
     }
@@ -184,9 +204,8 @@ Rectangle
         width: 50
         font.pixelSize: fontSize
         font.bold: fontBold
-        wrapMode: Text.WordWrap
         anchors.left: parent.left
-        anchors.leftMargin: 0
+        anchors.leftMargin: Theme.paddingSmall
         anchors.bottom: parent.bottom
         text: "unk"
     }
@@ -199,15 +218,12 @@ Rectangle
         Text
         {
             color: Theme.primaryColor
-            width: 50
             font.pixelSize: fontSize
             font.bold: fontBold
-            wrapMode: Text.WordWrap
             anchors.left: parent.left
-            anchors.leftMargin: 0
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: (index+1) * ((parent.height/5) - fontSize )
+            anchors.leftMargin: Theme.paddingSmall
             text: "unk"
+            y: valueMin.y + (index+1)*(valueMax.y + valueMax.height - valueMin.y)/5
             z: 10
         }
     }
@@ -269,80 +285,37 @@ Rectangle
 
     }
 
-    Canvas
+    Repeater
+    {
+        model: 7
+        delegate: Rectangle
+        {
+            x: index * parent.width/6
+            width: 1
+            anchors.top: valueMax.bottom
+            anchors.bottom: valueMin.top
+            opacity: 0.3
+        }
+    }
+
+    Repeater
+    {
+        model: 6
+        delegate: Rectangle
+        {
+            y: valueMin.y + index*(valueMax.y + valueMax.height - valueMin.y)/5 + height
+            width: parent.width
+            height: 1
+            opacity: 0.3
+        }
+    }
+
+    Item
     {
         id: canvas
         width: parent.width
         anchors.top: valueMax.bottom
         anchors.bottom: valueMin.top
-        antialiasing: true
-
-        property int first: 0
-        property int last: 0
-
-        function drawBackground(ctx)
-        {
-            ctx.save();
-
-            // clear previous plot
-            ctx.clearRect(0,0,canvas.width, canvas.height);
-
-            // fill translucent background
-            // ctx.fillStyle = Qt.rgba(0,0,0,0.5);
-            // ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // draw grid lines
-            ctx.strokeStyle = Qt.rgba(1,1,1,0.3);
-            ctx.beginPath();
-
-            var cols = 6.0;
-            var rows = 5.0;
-
-            for (var i = 0; i < rows; i++)
-            {
-                ctx.moveTo(0, i * (canvas.height/rows));
-                ctx.lineTo(canvas.width, i * (canvas.height/rows));
-            }
-            for (i = 0; i < cols; i++)
-            {
-                ctx.moveTo(i * (canvas.width/cols), 0);
-                ctx.lineTo(i * (canvas.width/cols), canvas.height);
-            }
-            ctx.stroke();
-
-            ctx.restore();
-        }
-
-        onCanvasSizeChanged: requestPaint();
-
-        onPaint:
-        {
-            var ctx = canvas.getContext("2d");
-
-            ctx.globalCompositeOperation = "source-over";
-            ctx.lineWidth = 2;
-
-            drawBackground(ctx);
-
-            if (!dataListModel)
-            {
-                console.log("not ready")
-                return;
-            }
-
-            // assign some timestamp which is in range as start/end default for further expanding
-            xstart = new Date(dataListModel[0][0]["timestamp"])
-            xend = new Date(dataListModel[0][0]["timestamp"])
-
-            min = 99999999.9
-            max = -99999999.9
-
-            for (var n=0; n<dataListModel.length; n++)
-                getMinMax(dataListModel[n])
-
-            updateVerticalScale()
-            updateHorizontalScale()
-        }
 
         PinchArea
         {
@@ -390,9 +363,9 @@ Rectangle
                     deltaY += dY
                 }
 
-                canvas.requestPaint()
-
+                updateGraph()
             }
+
             MouseArea
             {
                 property real iX
@@ -418,7 +391,7 @@ Rectangle
                     pinchZoom.deltaX = 0
                     pinchZoom.deltaY = 0
 
-                    canvas.requestPaint()
+                    updateGraph()
                 }
                 onPositionChanged:
                 {
@@ -429,7 +402,7 @@ Rectangle
                     iY = mouseY
                     movementY += dY
 
-                    canvas.requestPaint()
+                    updateGraph()
                 }
                 onReleased: plotDraggingActive = false
             }
