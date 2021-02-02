@@ -39,7 +39,7 @@ Rectangle
     property real min : 0.0
     property real max : 1.0
 
-    property int fontSize: 14
+    property int fontSize: Theme.fontSizeTiny
     property bool fontBold: true
 
     property date xstart : new Date()
@@ -140,7 +140,7 @@ Rectangle
     {
         id: xStart
         color: Theme.primaryColor
-        font.pointSize: fontSize
+        font.pixelSize: fontSize
         font.bold: fontBold
         wrapMode: Text.WordWrap
         anchors.right: parent.right
@@ -153,7 +153,7 @@ Rectangle
     {
         id: xEnd
         color: Theme.primaryColor
-        font.pointSize: fontSize
+        font.pixelSize: fontSize
         font.bold: fontBold
         wrapMode: Text.WordWrap
         anchors.left: parent.left
@@ -168,7 +168,7 @@ Rectangle
         id: valueMax
         color: Theme.primaryColor
         width: 50
-        font.pointSize: fontSize
+        font.pixelSize: fontSize
         font.bold: fontBold
         wrapMode: Text.WordWrap
         anchors.left: parent.left
@@ -182,7 +182,7 @@ Rectangle
         id: valueMin
         color: Theme.primaryColor
         width: 50
-        font.pointSize: fontSize
+        font.pixelSize: fontSize
         font.bold: fontBold
         wrapMode: Text.WordWrap
         anchors.left: parent.left
@@ -200,7 +200,7 @@ Rectangle
         {
             color: Theme.primaryColor
             width: 50
-            font.pointSize: fontSize
+            font.pixelSize: fontSize
             font.bold: fontBold
             wrapMode: Text.WordWrap
             anchors.left: parent.left
