@@ -21,11 +21,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <QGuiApplication>
 #include <QQmlContext>
 #include <QCoreApplication>
+#include <QSurfaceFormat>
+#include "graph.h"
 #include "logger.h"
 
 
 int main(int argc, char *argv[])
 {
+    qmlRegisterType<Graph>("harbour.valuelogger.Logger", 1, 0, "Graph");
     qmlRegisterType<Logger>("harbour.valuelogger.Logger", 1, 0, "Logger");
 
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
@@ -35,6 +38,10 @@ int main(int argc, char *argv[])
     app->installTranslator(&translator);
 
     QScopedPointer<QQuickView> view(SailfishApp::createView());
+    // Enable multisampling
+    QSurfaceFormat format = view->format();
+    format.setSamples(16);
+    view->setFormat(format);
     view->setSource(SailfishApp::pathTo("qml/valuelogger.qml"));
     view->show();
 

@@ -22,16 +22,18 @@ i18n.files = i18n/translations_fi.qm \
 INSTALLS += i18n
 
 SOURCES += src/valuelogger.cpp \
-	src/logger.cpp
-	
-HEADERS += src/logger.h
+        src/graph.cpp \
+        src/logger.cpp
+
+HEADERS += src/graph.h \
+        src/logger.h
 
 OTHER_FILES += qml/valuelogger.qml \
     qml/cover/CoverPage.qml \
     qml/pages/Valuelogger.qml \
     qml/pages/AboutPage.qml \
     rpm/valuelogger.spec \
-        harbour-valuelogger.png \
+    harbour-valuelogger.png \
     harbour-valuelogger.desktop \
     qml/pages/NewParameter.qml \
     qml/pages/AddValue.qml \
